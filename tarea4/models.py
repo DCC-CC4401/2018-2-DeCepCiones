@@ -9,6 +9,7 @@ class Curso(models.Model):
     Ano = models.IntegerField(max_length=4)
     Semestre = models.CharField(max_length=10)
 
+
 #la idea de usar user como abstracto es poder usar las funciones de validacion de django y poder setear nuestros atributos para user.
 #no se si funciona asi. revisar o preguntar.
 class Usuario(models.Model):
@@ -30,31 +31,31 @@ class Estudiante(Usuario):
 
 
 class Grupo(models.Model):
-    curso = models.ForeignKey(Curso)
-    estudiante = models.ForeignKey(Estudiante)
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     Nombre = models.CharField(max_length=50)
     Estado = models.CharField() # activo VS historico para efectos de historial.
 
 
 class Coevaluacion(models.Model):
-    estado = models.CharField(max_lenght=20)
+    estado = models.CharField(max_length=20)
     fecha_inicio = models.DateField()
     fecha_termino = models.DateField()
-    curso = models.ForeignKey(Curso)
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
 
 
 class Pregunta(models.Model):
     pregunta = models.CharField(max_length=250)         # estará bien con 250?
-    coevaluacion = models.ForeignKey(Coevaluacion)
+    coevaluacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
 
 
 class PreguntasEstudiantes(models.Model):
     respuesta = models.CharField(max_length=250)
-    estudiante = models.ForeignKey(Estudiante)
-    pregunta = models.ForeignKey(Pregunta)
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
 
 
 class PreguntasDocentes(models.Model):
-    docente = models.ForeignKey(Docente)
-    pregunta = models.ForeignKey(Pregunta)
+    docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
+    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
 
