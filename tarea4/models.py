@@ -1,72 +1,60 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
-
-class Usuario(models.Model):
-    ID = models.IntegerField(max_length=10, primary_key=True)
-    rut = models.CharField(max_length=20)
-    nombre = models.CharField(max_length=50)
-    email = models.EmailField()
-
-
-class Grupo(models.Model):
-    IDGrupo = models.IntegerField(max_length=10, primary_key=True)
-    IDCurso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    Nombre = models.CharField(max_length=50)
-
-
-class Estudiante(models.Model):
-    IDEstudiante = models.IntegerField(max_length=10, primary_key=True)
-    IDUsuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-
-class GrupoEstudiante(models.Model):
-    IDGrupo = models.ForeignKey(Grupo)
-    IDEstudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
-    Periodo = models.DateField()
-
-
-class Docente(models.Model):
-    IDDocente = models.IntegerField(max_length=10, primary_key=True)
-    IDUsuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    cargo = models.CharField(max_length=20)
-
-
-class Coevaluacion(models.Model):
-    IDCoevaluacion = models.IntegerField(max_length=10, primary_key=True)
-    IDCurso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    Estado = models.CharField(max_lenght=20)
-    Fecha_inicio = models.DateField()
-    Fecha_termino = models.DateField()
-
-
-class Preguntas(models.Model):
-    IDPregunta = models.IntegerField(max_length=10)
-    IDCoevalacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
-    Pregunta = models.CharField(max_length=250)         # estará bien con 250?
-
-
-class PreguntasEstudiantes(models.Model):
-    IDPregunta = models.ForeignKey(Preguntas)
-    IDEstudiante = models.ForeignKey(Estudiante)
-    Respuesta = models.CharField(max_length=250)
-
-
 class Curso(models.Model):
-    IDCurso = models.IntegerField(max_length=10, primary_key=True)
     Nombre = models.CharField(max_length=10)
     Codigo = models.CharField(max_length=10)
     Seccion = models.IntegerField(max_length=10)
     Ano = models.IntegerField(max_length=4)
     Semestre = models.CharField(max_length=10)
 
+#la idea de usar user como abstracto es poder usar las funciones de validacion de django y poder setear nuestros atributos para user.
+#no se si funciona asi. revisar o preguntar.
+class Usuario(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # no se si esto funciona, Usuario es abstracto y user es el usuario de django.
+    nombre = models.CharField(max_length=60)
+    email = models.EmailField()
 
-class EstudianteCurso(models.Model):
-    IDDocente = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
-    IDCurso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    class Meta:
+        abstract = True
 
 
-class DocenteCurso(models.Model):
-    IDDocente = models.ForeignKey(Docente, on_delete=models.CASCADE)
-    IDCurso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+class Docente(Usuario):
+    cargo = models.CharField(max_length=20)
+    cursos = models.ManyToManyField(Curso)
+
+
+class Estudiante(Usuario):
+    cursos = models.ManyToManyField(Curso)
+
+
+class Grupo(models.Model):
+    curso = models.ForeignKey(Curso)
+    estudiante = models.ForeignKey(Estudiante)
+    Nombre = models.CharField(max_length=50)
+    Estado = models.CharField() # activo VS historico para efectos de historial.
+
+
+class Coevaluacion(models.Model):
+    estado = models.CharField(max_lenght=20)
+    fecha_inicio = models.DateField()
+    fecha_termino = models.DateField()
+    curso = models.ForeignKey(Curso)
+
+
+class Pregunta(models.Model):
+    pregunta = models.CharField(max_length=250)         # estará bien con 250?
+    coevaluacion = models.ForeignKey(Coevaluacion)
+
+
+class PreguntasEstudiantes(models.Model):
+    respuesta = models.CharField(max_length=250)
+    estudiante = models.ForeignKey(Estudiante)
+    pregunta = models.ForeignKey(Pregunta)
+
+
+class PreguntasDocentes(models.Model):
+    docente = models.ForeignKey(Docente)
+    pregunta = models.ForeignKey(Pregunta)
 
