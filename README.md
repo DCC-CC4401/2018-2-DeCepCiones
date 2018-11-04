@@ -6,8 +6,8 @@ Si todo salió bien, se deberia poder descargar el repositorio como un proyecto 
 
 ## Archivos
 En este repositorio se encuentran:
-> la carpeta principal del proyecto de Django en PyCharm: coev. Con sus archivos.py necesarios.
-> la carpeta del app  de coevlacion: Tarea 4. Con sus archivos.py necesarios.
-> la carpeta templates que usa la app. Con sus html.
-> el archivo manage.py
+- la carpeta principal del proyecto de Django en PyCharm: coev. Con sus archivos.py necesarios.
+- la carpeta del app  de coevlacion: Tarea 4. Con sus archivos.py necesarios.
+- la carpeta templates que usa la app. Con sus html.
+- el archivo manage.py
       
