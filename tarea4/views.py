@@ -2,7 +2,7 @@ from django.shortcuts import render
 from tarea4.models import *
 
 # Create your views here.
-def landingPageEstudiantes(request):
+def landingPageEstudiante(request):
     userID = 1; #placeholder para la id correcta.
 
     #nota dependiendo de como quede el modelo user, el filtro puede cambiar.
