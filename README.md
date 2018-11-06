@@ -17,7 +17,7 @@ Estos archivos no contienen ni la base de datos ni las migraciones, en cada proy
 - python manage.py makemigrations tarea4
 - python manage.py migrate
 
-## Uso de los ccs y js del mockup
+## Uso de los css y js del mockup
 Para hacer disponibles se debio guardar los archivos de css y js en la carpeta statis dentro de la carpeta de la app "tarea4", que esta dentro de la raiz del proyecto.
 En los setings del proyecto se debe setear la ruta de static (ya esta en el repo).
 Los archivos se cargan haciendo accesible la ruta con la variable static y se referencian con esta variable como raiz del elemento.
