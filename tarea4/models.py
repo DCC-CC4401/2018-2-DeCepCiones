@@ -5,13 +5,15 @@ from django.contrib.auth.models import User
 class Curso(models.Model):
     Nombre = models.CharField(max_length=10)
     Codigo = models.CharField(max_length=10)
-    Seccion = models.IntegerField(max_length=10)
-    Ano = models.IntegerField(max_length=4)
+    Seccion = models.IntegerField()
+    Ano = models.IntegerField()
     Semestre = models.CharField(max_length=10)
 
 
-#la idea de usar user como abstracto es poder usar las funciones de validacion de django y poder setear nuestros atributos para user.
-#no se si funciona asi. revisar o preguntar.
+"""
+la idea de usar user como abstracto es poder usar las funciones de validacion de django y poder setear nuestros atributos para user.
+no se si funciona asi. revisar o preguntar.
+"""
 class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # no se si esto funciona, Usuario es abstracto y user es el usuario de django.
     nombre = models.CharField(max_length=60)
@@ -51,11 +53,6 @@ class Pregunta(models.Model):
 
 class PreguntasEstudiantes(models.Model):
     respuesta = models.CharField(max_length=250)
-    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    estudianteRespondedor = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name="evaluador")
+    estudianteEvaluado = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name="evaluado")
     pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
-
-
-class PreguntasDocentes(models.Model):
-    docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
-    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
-
