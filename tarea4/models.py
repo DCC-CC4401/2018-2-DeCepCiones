@@ -34,7 +34,7 @@ class Grupo(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     Nombre = models.CharField(max_length=50)
-    Estado = models.CharField() # activo VS historico para efectos de historial.
+    Estado = models.CharField(max_length=50) # activo VS historico para efectos de historial.
 
 
 class Coevaluacion(models.Model):

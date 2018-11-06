@@ -13,8 +13,7 @@ def landingPageEstudiante(request):
     coevaluacionesDocente = Coevaluacion.objects.filter(pregunta__preguntasdocentes__docente_id=userID)
     coevaluacionesEstudiante = Coevaluacion.objects.filter(pregunta__preguntasestudiantes__estudiante=userID).distinct()
 
-
-    return render()
+    return render(request, 'tarea4/landingPageEstudiante.html')
 
 
 def perfilDueno(request):
