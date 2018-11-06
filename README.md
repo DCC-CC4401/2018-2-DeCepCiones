@@ -11,3 +11,9 @@ En este repositorio se encuentran:
 - la carpeta templates que usa la app. Con sus html.
 - el archivo manage.py
       
+## Config del admin y base de datos.
+Estos archivos no contienen ni la base de datos ni las migraciones, en cada proyecto se debe cargar la base de datos, generar la migracion inicial y cargar la migracion.
+- python manage.py migrate
+- python manage.py makemigrations polls
+- python manage.py migrate
+Tambien deben setear el superuser.
