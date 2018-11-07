@@ -65,35 +65,41 @@
 
                         <!-- Cuerpo de tabla (Table Data) -->
                         <tbody>
-                            <tr class="tr-pendiente"> <!-- Fila destacada como Pendiente -->
+                            {%  for coev in listaCoev %}
+
+                            <tr class="tr-{{ coev.estadoTr }}"> <!-- Fila destacada como Pendiente -->
                                 <!-- Fecha de inicio -->
                                 <td class="td-fecha">
-                                    20:01 01/12/18
+                                    {{ coev.fechaInicio }}
                                 </td>
                                 <!-- Título de coevaluación -->
-                                <td>Tarea final</td>
+                                <td>{{ coev.nombre }}</td>
                                 <!-- Curso, con ícono de rol, nombre y código -->
                                 <td class="td-curso-full">
-                                    <div class="cargos cargos-alumno tooltip-custom">
+                                    <div class="cargos cargos-{{ coev.cargo }} tooltip-custom">
                                         <span class="tooltiptext"></span>
                                     </div>
-                                    <span class="curso-nombre">Proyecto de Software</span>
+                                    <span class="curso-nombre">{{ coev.cursoNombre }}</span>
                                     <br>
-                                    <span class="curso-codigo">CC5402-1</span>
+                                    <span class="curso-codigo">{{ coev.cursoCodigo }}</span>
                                 </td>
                                 <!-- Semestre -->
-                                <td>2018-2</td>
+                                <td>{{ coev.cursoSemestre }}</td>
                                 <!-- Fecha de término -->
                                 <td class="td-fecha">
-                                    23:59 20/12/18
+                                    {{ coev.fechaFin }}
                                 </td>
                                 <!-- Estado -->
-                                <td>Pendiente</td>
+                                <td>{{ coev.estado }}</td>
                                 <!-- Ícono de acción (responder) -->
                                 <td class="td-icon">
+                                    {% if coev.responder != Null %}
                                     <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png'%}" alt="Responder coevaluación" width="28" height="28"></a>
+                                    {% endif %}
                                 </td>
                             </tr>
+                            {% endfor %}
+
                             <tr class="tr-pendiente">
                                 <td class="td-fecha">
                                     12:03 11/11/18
@@ -225,17 +231,19 @@
                         </thead>
                         <!-- Cuerpo de tabla (Table Data) -->
                         <tbody>
+                            {% for curso in listaCurso %}
                             <tr>
                                 <td class="td-curso-full">
-                                    <div class="cargos cargos-alumno tooltip-custom">
+                                    <div class="cargos cargos-{{ curso.cargo }} tooltip-custom">
                                         <span class="tooltiptext"></span>
                                     </div>
-                                    <span class="curso-nombre">Proyecto de Software</span>
+                                    <span class="curso-nombre">{{ curso.nombre }}</span>
                                     <br>
-                                    <span class="curso-codigo">CC5402-1</span>
+                                    <span class="curso-codigo">{{ curso.codigo }}</span>
                                 </td>
-                                <td>2018-2</td>
+                                <td>{{ curso.semestre }}</td>
                             </tr>
+                            {% endfor %}
                             <tr>
                                 <td class="td-curso-full">
                                     <div class="cargos cargos-alumno tooltip-custom">

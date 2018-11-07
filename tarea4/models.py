@@ -40,6 +40,7 @@ class Grupo(models.Model):
 
 
 class Coevaluacion(models.Model):
+    nombre = models.CharField(max_length=30)
     estado = models.CharField(max_length=20)
     fecha_inicio = models.DateField()
     fecha_termino = models.DateField()
