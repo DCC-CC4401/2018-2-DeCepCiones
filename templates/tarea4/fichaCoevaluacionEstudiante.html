@@ -2,6 +2,7 @@
     <html lang="es">
     <head>
         <meta charset="UTF-8">
+        {% load static %}
         <link rel="stylesheet" href="{% static 'tarea4/css/bootstrap.min.css' %}"/>
         <link rel="stylesheet" href="{% static 'tarea4/css/coeval.css' %}"/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -49,21 +50,21 @@
                 <div class="col-md-4 mb-3">
                     <h4 class="d-inline-block mt-1">Información</h4>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Título</h6>
-                    <span>Tarea 1</span>
+                    <span>{{ coev.nombre }}</span>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Curso</h6>
-                    <span>CC4401 Ingeniería de Software I 2018, Primavera</span>
+                    <span>{{ coev.datosCurso }}</span>
                     <div class="row">
                         <div class="col-6">
                             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha de inicio</h6>
-                            <span>03:53 20/10/18</span>
+                            <span>{{ coev.fechaInicio }}</span>
                         </div>
                         <div class="col-6">
                             <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Fecha límite</h6>
-                            <span>23:59 27/10/18</span>
+                            <span>{{ coev.fechaTermino }}</span>
                         </div>
                     </div>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>
-                    <span>Abierta</span>
+                    <span>{{ coev.estado }}</span>
                 </div>
                 <!-- FIN Información -->
 

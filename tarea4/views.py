@@ -58,6 +58,11 @@ def fichaCursoDocente(request):
 
 
 def fichaCoevaluacionEstudiante(request):
-    cursoID = 1;
-    coev = Coevaluacion.objects.filter(curso=cursoID)
-    return render(request, 'tarea4/fichaCoevaluacionEstudiante.html', {'coev': coev})
+    coevID = 1 # placeholder
+
+    coev = Coevaluacion.objects.get(id=coevID)
+    coevCurso = coev.curso
+    infoCoev = {'nombre': coev.nombre, 'datosCurso': coevCurso.Codigo + " " + coevCurso.Nombre + " " + str(coevCurso.Seccion) +
+                ", " + str(coevCurso.Ano) + "-" + str(coevCurso.Semestre), 'fechaInicio': coev.fecha_inicio, 'fechaTermino': coev.fecha_termino,
+                'estado': coev.estado}
+    return render(request, 'tarea4/fichaCoevaluacionEstudiante.html', {'coev': infoCoev})
