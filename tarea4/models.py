@@ -17,6 +17,8 @@ no se si funciona asi. revisar o preguntar.
 class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # no se si esto funciona, Usuario es abstracto y user es el usuario de django.
     nombre = models.CharField(max_length=60)
+    apellido = models.CharField(max_length=60)
+    rut = models.CharField(max_length=15)
     email = models.EmailField()
 
     class Meta:

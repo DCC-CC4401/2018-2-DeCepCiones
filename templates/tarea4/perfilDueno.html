@@ -2,6 +2,7 @@
     <html lang="es">
     <head>
         <meta charset="UTF-8">
+        {% load static %}
         <link rel="stylesheet" href="{% static 'tarea4/css/bootstrap.min.css' %}"/>
         <link rel="stylesheet" href="{% static 'tarea4/css/coeval.css' %}"/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -26,7 +27,7 @@
                 <ul class="navbar-nav ml-auto">
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Juanito Pérez</a>
+                        <a class="nav-link" href="#">{{ dueno.nombre }}</a>
                     </li>
                     <li class="divider-vertical"></li>
                     <li class="nav-item">
@@ -49,11 +50,11 @@
                 <div class="col-md-3 mb-3">
                     <h4 class="d-inline-block mt-1">Tu Perfil</h4>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Nombre</h6>
-                    <span>Juanito Juan Pérez Pereira</span>
+                    <span>{{ dueno.nombreCompleto }}</span>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">RUT</h6>
-                    <span>12.345.678-9</span>
+                    <span>{{ dueno.rut }}</span>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Correo Electrónico</h6>
-                    <span>lorem@ipsum.com</span>
+                    <span>{{ dueno.email }}</span>
                     <button type="button" id="change-pass-btn" class="btn btn-secondary mt-3 d-block" onclick="changePass()">Cambiar contraseña</button>
                     <span class="small">(clickeable)</span>
                 </div>
@@ -74,17 +75,19 @@
                             </thead>
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
+                                {% for curso in listaCurso %}
                                 <tr id="row-btn" onclick="showNotas()">
                                     <td class="td-curso-full">
-                                        <div class="cargos cargos-alumno tooltip-custom">
+                                        <div class="cargos cargos-{{ curso.cargo }} tooltip-custom">
                                             <span class="tooltiptext"></span>
                                         </div>
-                                        <span class="curso-nombre">Proyecto de Software (clickeable)</span>
+                                        <span class="curso-nombre">{{ curso.nombre }}</span>
                                         <br>
-                                        <span class="curso-codigo">CC5402-1</span>
+                                        <span class="curso-codigo">{{ curso.codigo }}</span>
                                     </td>
-                                    <td>2018-2</td>
+                                    <td>{{ curso.semestre }}</td>
                                 </tr>
+                                {% endfor %}
                                 <tr>
                                     <td class="td-curso-full">
                                         <div class="cargos cargos-alumno tooltip-custom">
@@ -117,7 +120,7 @@
                 <div class="col-md-5">
                     <div id="cambiar-contrasena">
                         <h4 class="d-inline-block mt-1">Cambiar contraseña</h4>
-                        <form>
+                        <form >
                             <div class="form-group">
                                 <label for="passOld">Ingrese su contraseña actual</label>
                                 <input type="password" class="form-control" id="passOld">
