@@ -8,8 +8,8 @@ urlpatterns = [
     # El nombre de la url permite insertarla en la template usando {% url 'humano' %}
     #path('admin/', admin.site.urls),
     path('home/', views.landingPageEstudiante),
-    path('perfil/', views.perfilDueno),
-    path('fichaCursoDoc/', views.fichaCursoDocente),
-    path('fichaCursoEst/', views.fichaCursoEstudiante),
-    path('fichaCoev/', views.fichaCoevaluacionEstudiante),
+    path('perfil/', views.perfilDueno, name='perfil'),
+    path('fichaCursoDoc/<int:idCurso>', views.fichaCursoDocente, name='fichaCursoDocente'),
+    path('fichaCursoEst/<int:idCurso>', views.fichaCursoEstudiante, name='fichaCursoEstudiante'),
+    path('fichaCoev/<int:idCoev>', views.fichaCoevaluacionEstudiante,name='fichaCoevaluacion'),
 ]

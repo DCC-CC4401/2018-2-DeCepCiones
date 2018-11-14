@@ -28,7 +28,7 @@
             <ul class="navbar-nav ml-auto">
                 <li class="divider-vertical"></li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Juanito Pérez</a>
+                    <a class="nav-link" href="{% url 'perfil' %}">Juanito Pérez</a>
                 </li>
                 <li class="divider-vertical"></li>
                 <li class="nav-item">
@@ -73,7 +73,7 @@
                                     {{ coev.fechaInicio }}
                                 </td>
                                 <!-- Título de coevaluación -->
-                                <td>{{ coev.nombre }}</td>
+                                <td> <a href="{% url 'fichaCoevaluacion' coev.id %}"> {{ coev.nombre }}</a> </td>
                                 <!-- Curso, con ícono de rol, nombre y código -->
                                 <td class="td-curso-full">
                                     <div class="cargos cargos-{{ coev.cargo }} tooltip-custom">
@@ -237,7 +237,7 @@
                                     <div class="cargos cargos-{{ curso.cargo }} tooltip-custom">
                                         <span class="tooltiptext"></span>
                                     </div>
-                                    <span class="curso-nombre">{{ curso.nombre }}</span>
+                                    <a href="{% url 'fichaCursoEstudiante' curso.id %}"> <span class="curso-nombre">{{ curso.nombre }}</span> </a>
                                     <br>
                                     <span class="curso-codigo">{{ curso.codigo }}</span>
                                 </td>
