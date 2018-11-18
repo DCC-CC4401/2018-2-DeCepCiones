@@ -46,15 +46,15 @@ def perfilDueno(request):
     dueno = {'nombre': estudiante.nombre, 'nombreCompleto': estudiante.nombre + " " + estudiante.apellido,
              'email': estudiante.email, 'rut': estudiante.rut}
 
-    return render(request, 'tarea4/perfilDueno.html', {'dueno': dueno, 'listaCurso': cursosEstudiante})
+    return render(request, 'perfilDueno.html', {'dueno': dueno, 'listaCurso': cursosEstudiante})
 
 
 def fichaCursoEstudiante(request,idCurso):
-    return render(request, 'tarea4/fichaCursoEstudiante.html')
+    return render(request, 'fichaCursoEstudiante.html')
 
 
 def fichaCursoDocente(request,idCurso):
-    return render(request, 'tarea4/fichaCursoDocente.html')
+    return render(request, 'fichaCursoDocente.html')
 
 
 def fichaCoevaluacionEstudiante(request,idCoev):
@@ -63,4 +63,4 @@ def fichaCoevaluacionEstudiante(request,idCoev):
     infoCoev = {'nombre': coev.nombre, 'datosCurso': coevCurso.Codigo + " " + coevCurso.Nombre + " " + str(coevCurso.Seccion) +
                 ", " + str(coevCurso.Ano) + "-" + str(coevCurso.Semestre), 'fechaInicio': coev.fecha_inicio, 'fechaTermino': coev.fecha_termino,
                 'estado': coev.estado}
-    return render(request, 'tarea4/fichaCoevaluacionEstudiante.html', {'coev': infoCoev})
+    return render(request, 'fichaCoevaluacionEstudiante.html', {'coev': infoCoev})

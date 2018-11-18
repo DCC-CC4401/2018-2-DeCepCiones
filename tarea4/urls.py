@@ -7,9 +7,9 @@ urlpatterns = [
     # En este caso el string de path recibe un entero, y la variable tiene nombre humano. También se pueden usar regex.
     # El nombre de la url permite insertarla en la template usando {% url 'humano' %}
     #path('admin/', admin.site.urls),
-    path('home/', views.landingPageEstudiante),
+    path('home/', views.landingPageEstudiante, name='landingPage'),
     path('perfil/', views.perfilDueno, name='perfil'),
     path('fichaCursoDoc/<int:idCurso>', views.fichaCursoDocente, name='fichaCursoDocente'),
     path('fichaCursoEst/<int:idCurso>', views.fichaCursoEstudiante, name='fichaCursoEstudiante'),
-    path('fichaCoev/<int:idCoev>', views.fichaCoevaluacionEstudiante,name='fichaCoevaluacion'),
+    path('fichaCoev/<int:idCoev>', views.fichaCoevaluacionEstudiante, name='fichaCoevaluacion'),
 ]
