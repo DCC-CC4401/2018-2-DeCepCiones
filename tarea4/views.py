@@ -49,12 +49,51 @@ def perfilDueno(request):
     return render(request, 'perfilDueno.html', {'dueno': dueno, 'listaCurso': cursosEstudiante})
 
 
-def fichaCursoEstudiante(request,idCurso):
-    return render(request, 'fichaCursoEstudiante.html')
+def fichaCursoEstudiante(request, idCurso):
+    userID = request.user.id
+    curso = Curso.objects.get(id=idCurso)
+    coevs = Coevaluacion.objects.filter(curso=idCurso, curso__estudiante__user_id=userID)
+    dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + " " + str(curso.Ano) + ", " + str(curso.Semestre)
+    listaCoev = []
+    for coev in coevs:
+        listaCoev.append({'fechaIni': coev.fecha_inicio, 'fechaTer': coev.fecha_termino, 'nombre': coev.nombre, 'estado':
+                          coev.estado, 'id': coev.id})
+    return render(request, 'fichaCursoEstudiante.html', {'dataCurso': dataCurso, 'coevs': listaCoev})
 
 
 def fichaCursoDocente(request,idCurso):
-    return render(request, 'fichaCursoDocente.html')
+    userID = request.user.id
+    curso = Curso.objects.get(id=idCurso)
+    coevs = Coevaluacion.objects.filter(curso=idCurso)
+    grupos = Grupo.objects.filter(curso=idCurso)
+    estudiantes = Estudiante.objects.filter(cursos=idCurso).distinct()
+    dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + " " + str(curso.Ano) + ", " + str(
+        curso.Semestre)
+    listaGrupos = []
+    listaCoev = []
+    listaEstudiantes = []
+
+    for estudiante in estudiantes:
+        listaEstudiantes.append(estudiante.nombre)
+
+    for grupo in grupos:
+        listaTitulos = []
+        listaAlumnos = []
+        for alumno in curso.estudiante_set.all():
+            listaNotas = []
+            for nota in NotaEstudiante.objects.filter(coevaluacion__curso=idCurso, estudiante=alumno.user.id).order_by('fecha_publicacion'):
+                listaNotas.append(nota.nota)
+            listaAlumnos.append({'nombre': alumno.nombre, 'notas': listaNotas})
+        for i in range(len(coevs)):
+            listaTitulos.append("nota "+ str(i+1))
+        listaGrupos.append({'nombre': grupo.Nombre, 'titulos': listaTitulos, 'alumnos': listaAlumnos})
+
+    for coev in coevs:
+        listaCoev.append({'fechaIni': coev.fecha_inicio, 'fechaTer': coev.fecha_termino, 'nombre': coev.nombre, 'estado':
+                        coev.estado, 'id': coev.id})
+
+    return render(request, 'fichaCursoDocente.html', {'dataCurso': dataCurso, 'grupos': listaGrupos, 'coevs': listaCoev,
+                                                      'estudiantes': listaEstudiantes})
 
 
 def fichaCoevaluacionEstudiante(request,idCoev):

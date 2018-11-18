@@ -1,10 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <html lang="es">
+    <head>
+        {% load static %}
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{% static 'tarea4/css/bootstrap.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'tarea4/css/coeval.css' %}"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+        <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+        <script src="{% static 'tarea4/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'tarea4/js/coeval.js' %}"></script>
+        <title>Sistema de Coevaluaciones DCC</title>
+    </head>
+    <body>
+        <!-- Barra superior -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-5 py-3">
+            <a class="navbar-brand" href="#">Sistema de Coevaluaciones DCC</a>
+            <!-- Al achicar la pantalla, el menú se oculta y se vuelve desplegable mediante este botón. -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <i class="fa fa-navicon"></i>
+                </span>
+            </button>
 
-</body>
-</html>
+            <!-- Menú superior-derecha -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="divider-vertical"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Juanito Pérez</a>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- FIN Barra superior -->
+
+        <!-- Cuerpo -->
+        <div class="container"> <!-- Contenedor responsivo de Bootstrap, se adapta a la pantalla usando columnas. -->
+
+            <h3 class="d-inline-block page-title">Ficha de Curso</h3>
+            <h5 class="mb-3">
+                <div class="cargos cargos-alumno"></div>
+                {{ dataCurso }}
+            </h5>
+            <hr/>
+            <!-- Tablas de resumen -->
+            <div class="row">
+                <!-- Tabla de coevaluaciones -->
+                <div class="col-md-10 offset-1">
+            		<h4 class="d-inline-block mt-1">Tus coevaluaciones del curso</h4>
+
+                    <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                        <table class="table table-coeval-curso table-striped table-hover mb-0"> <!-- Tabla -->
+                            <!-- Encabezados de tabla (Table Headers) -->
+                            <thead class="thead-light">
+                                <tr> <!-- Fila (Table Row) -->
+                                    <th class="th-fecha">Fecha inicio</th>
+                                    <th class="th-titulo">Nombre</th>
+                                    <th class="th-fecha">Fecha límite</th>
+                                    <th class="th-estado">Estado</th>
+                                    <th class="th-iconos"></th>
+                                </tr>
+                            </thead>
+
+                            <!-- Cuerpo de tabla (Table Data) -->
+                            <tbody>
+                            {% for coev in coevs %}
+                                <tr class="tr-{{ coev.estado }}"> <!-- Fila destacada como Pendiente -->
+                                    <!-- Fecha de inicio -->
+                                    <td class="td-fecha">
+                                        {{ coev.fechaIni }}
+                                    </td>
+                                    <!-- Título de coevaluación -->
+                                    <td>{{ coev.nombre }}</td>
+                                    <!-- Fecha de término -->
+                                    <td class="td-fecha">
+                                        {{ coev.fechaTer }}
+                                    </td>
+                                    <!-- Estado -->
+                                    <td>{{ coev.estado }}</td>
+                                    <!-- Ícono de acción (responder) -->
+                                    <td class="td-icon">
+                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                                <tr class="tr-pendiente">
+                                    <td class="td-fecha">
+                                        12:03 11/11/18
+                                    </td>
+                                    <td>Tarea con nombre muy largo que ocupa todo el espacio</td>
+                                    <td class="td-fecha">
+                                        23:59 21/11/18
+                                    </td>
+                                    <td>Pendiente</td>
+                                    <td class="td-icon">
+                                        <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td-fecha">15:15 10/11/18</td>
+                                    <td>Tarea 2</td>
+                                    <td class="td-fecha">23:59 19/11/18</td>
+                                    <td>Cerrada</td>
+                                    <td class="td-icon">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="td-fecha">03:53 20/10/18</td>
+                                    <td>Tarea 1</td>
+                                    <td class="td-fecha">23:59 27/10/18</td>
+                                    <td>Publicada</td>
+                                    <td class="td-icon">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- div para buscador de alumnos -->
+            </div>
+            <hr>
+            <div class="row"> <!-- div para tarjetas de grupo -->
+                <div class="col-md-10 offset-1">
+            		<h4 class="d-inline-block mt-1">Grupos del curso</h4>
+
+                    {% for grupo in grupos %}
+                    <!-- carta de grupos -->
+                    <div class="card col-md-6">
+                        <h5 class="card-header">{{ grupo.nombre }}</h5>
+                        <div class="card-body">
+                            <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                                <table class="table table-coeval-curso table-striped table-hover mb-0 "> <!-- Tabla -->
+                                    <!-- Encabezados de tabla (Table Headers) -->
+                                    <thead class="thead-light">
+                                        <tr> <!-- Fila (Table Row) -->
+                                            <th>Alumnos</th>
+                                            {% for titulo in grupo.titulos %}
+                                            <th>{{ titulo }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+
+                                    <!-- Cuerpo de tabla (Table Data) -->
+                                    <tbody>
+                                        {% for alumno in grupo.alumnos %}
+                                        <tr> <!-- Fila destacada como Pendiente -->
+                                            <!-- Nombre alumno -->
+                                            <td>
+                                                {{ alumno.nombre }}
+                                            </td>
+                                            <!-- Notas -->
+                                            {% for nota in alumno.notas %}
+                                            <td>{{ nota }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </body>
+    </html>

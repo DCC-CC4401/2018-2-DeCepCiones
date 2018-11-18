@@ -36,7 +36,7 @@ class Estudiante(Usuario):
 
 class Grupo(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    estudiante = models.ManyToManyField(Estudiante)
     Nombre = models.CharField(max_length=50)
     Estado = models.CharField(max_length=50) # activo VS historico para efectos de historial.
 
@@ -59,3 +59,18 @@ class PreguntasEstudiantes(models.Model):
     estudianteRespondedor = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name="evaluador")
     estudianteEvaluado = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name="evaluado")
     pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
+
+
+class HistorialGrupos(models.Model):
+    grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    fecha_entrada = models.DateField()
+    fecha_salida = models.DateField()
+
+
+class NotaEstudiante(models.Model):
+    coevaluacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    nota = models.CharField(max_length=10)
+    fecha_publicacion = models.DateField()
+

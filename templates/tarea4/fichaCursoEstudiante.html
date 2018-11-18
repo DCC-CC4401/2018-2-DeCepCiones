@@ -1,6 +1,7 @@
 <!DOCTYPE html>
     <html lang="es">
     <head>
+        {% load static %}
         <meta charset="UTF-8">
         <link rel="stylesheet" href="{% static 'tarea4/css/bootstrap.min.css' %}"/>
         <link rel="stylesheet" href="{% static 'tarea4/css/coeval.css' %}"/>
@@ -43,7 +44,7 @@
             <h3 class="d-inline-block page-title">Ficha de Curso</h3>
             <h5 class="mb-3">
                 <div class="cargos cargos-alumno"></div>
-                CC4401-1 Ingeniería de Software 2018, Primavera
+                {{ dataCurso }}
             </h5>
             <hr/>
             <!-- Tablas de resumen -->
@@ -67,24 +68,26 @@
 
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
-                                <tr class="tr-pendiente"> <!-- Fila destacada como Pendiente -->
+                            {% for coev in coevs %}
+                                <tr class="tr-{{ coev.estado }}"> <!-- Fila destacada como Pendiente -->
                                     <!-- Fecha de inicio -->
                                     <td class="td-fecha">
-                                        20:01 01/12/18
+                                        {{ coev.fechaIni }}
                                     </td>
                                     <!-- Título de coevaluación -->
-                                    <td>Tarea final</td>
+                                    <td>{{ coev.nombre }}</td>
                                     <!-- Fecha de término -->
                                     <td class="td-fecha">
-                                        23:59 20/12/18
+                                        {{ coev.fechaTer }}
                                     </td>
                                     <!-- Estado -->
-                                    <td>Pendiente</td>
+                                    <td>{{ coev.estado }}</td>
                                     <!-- Ícono de acción (responder) -->
                                     <td class="td-icon">
-                                        <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
+                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
                                     </td>
                                 </tr>
+                            {% endfor %}
                                 <tr class="tr-pendiente">
                                     <td class="td-fecha">
                                         12:03 11/11/18
@@ -97,7 +100,35 @@
                                     <td class="td-icon">
                                         <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a>
                                     </td>
-                                </tr>
+
+
+% e
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </tr>
                                 <tr>
                                     <td class="td-fecha">15:15 10/11/18</td>
                                     <td>Tarea 2</td>
