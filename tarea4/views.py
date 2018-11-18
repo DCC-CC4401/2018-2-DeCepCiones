@@ -4,16 +4,16 @@ from tarea4.models import *
 
 # Create your views here.
 def landingPageEstudiante(request):
-    userID = 1  # placeholder para la id correcta.
+    userID = request.user.id  # placeholder para la id correcta.
 
     # nota dependiendo de como quede el modelo user, el filtro puede cambiar.
     cursosEstudiante = Curso.objects.filter(estudiante__user_id=userID)
     cursosDocente = Curso.objects.filter(docente__user_id=userID)
     docentes = Docente.objects.filter(user_id=userID)
     coevaluaciones = Coevaluacion.objects.filter(curso__estudiante__user_id=userID)
-    #coevaluaciones[0].curso.docente_set.filter(user_id__exact=userID)[0].cargo
+    # coevaluaciones[0].curso.docente_set.filter(user_id__exact=userID)[0].cargo
 
-    listaCurso =[]
+    listaCurso = []
     listaCoev = []
     for curso in cursosEstudiante:
         listaCurso.append({"cargo":"alumno", "nombre":curso.Nombre, "codigo":curso.Codigo+str(curso.Seccion), "semestre":str(curso.Ano)+" - "+str(curso.Semestre), "id":curso.id})
@@ -30,7 +30,7 @@ def landingPageEstudiante(request):
     #micurso = [{'cargo': "alumno", 'nombre':"asda", 'codigo':"67890", 'semestre':"67890p"}]
 
 
-    return render(request, 'tarea4/landingPageEstudiante.html', {'listaCoev': listaCoev, 'listaCurso': listaCurso  })
+    return render(request, 'landingPageEstudiante.html', {'listaCoev': listaCoev, 'listaCurso': listaCurso  })
 
 
 def perfilDueno(request):
