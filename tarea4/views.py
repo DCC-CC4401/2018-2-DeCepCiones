@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import render
 from tarea4.models import *
+from tarea4.forms import *
 from django.contrib.auth import *
 from django.contrib import messages
 
@@ -108,11 +109,21 @@ def fichaCursoDocente(request, idCurso):
 
 
 def fichaCoevaluacionEstudiante(request, idCoev):
+    if (request.method=='POST'):
+        a=1
+    userID = request.user.id
     coev = Coevaluacion.objects.get(id=idCoev)
     coevCurso = coev.curso
+    grupo = Grupo.objects.get(estudiante__user=userID, curso=coevCurso.id)
+    form = ResponderEval()
     infoCoev = {'nombre': coev.nombre,
                 'datosCurso': coevCurso.Codigo + " " + coevCurso.Nombre + " " + str(coevCurso.Seccion) +
                               ", " + str(coevCurso.Ano) + "-" + str(coevCurso.Semestre),
                 'fechaInicio': coev.fecha_inicio, 'fechaTermino': coev.fecha_termino,
                 'estado': coev.estado}
-    return render(request, 'fichaCoevaluacionEstudiante.html', {'coev': infoCoev})
+    listaIntegrantes = {}
+    for estudiante in grupo.estudiante.all():
+        listaIntegrantes[estudiante.first_name + " " + estudiante.last_name]= estudiante.id
+    return render(request, 'fichaCoevaluacionEstudiante.html', {'coev': infoCoev,'coevID':idCoev,'listaInt':listaIntegrantes,
+                                                                'formulario':form, 'nombreGrupo':grupo.Nombre})
+
