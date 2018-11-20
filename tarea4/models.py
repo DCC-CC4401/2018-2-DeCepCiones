@@ -1,8 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 class Curso(models.Model):
+    class Meta:
+        unique_together = (('Codigo', 'Seccion', 'Ano', 'Semestre'),)
+
     Nombre = models.CharField(max_length=10)
     Codigo = models.CharField(max_length=10)
     Seccion = models.IntegerField()
@@ -14,8 +18,11 @@ class Curso(models.Model):
 la idea de usar user como abstracto es poder usar las funciones de validacion de django y poder setear nuestros atributos para user.
 no se si funciona asi. revisar o preguntar.
 """
+
+
 class Usuario(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # no se si esto funciona, Usuario es abstracto y user es el usuario de django.
+    user = models.OneToOneField(User,
+                                on_delete=models.CASCADE)  # no se si esto funciona, Usuario es abstracto y user es el usuario de django.
     nombre = models.CharField(max_length=60)
     apellido = models.CharField(max_length=60)
     rut = models.CharField(max_length=15)
@@ -38,7 +45,7 @@ class Grupo(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     estudiante = models.ManyToManyField(Estudiante)
     Nombre = models.CharField(max_length=50)
-    Estado = models.CharField(max_length=50) # activo VS historico para efectos de historial.
+    Estado = models.CharField(max_length=50)  # activo VS historico para efectos de historial.
 
 
 class Coevaluacion(models.Model):
@@ -50,7 +57,7 @@ class Coevaluacion(models.Model):
 
 
 class Pregunta(models.Model):
-    pregunta = models.CharField(max_length=250)         # estará bien con 250?
+    pregunta = models.CharField(max_length=250)  # estará bien con 250?
     coevaluacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
 
 
@@ -73,4 +80,3 @@ class NotaEstudiante(models.Model):
     estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     nota = models.CharField(max_length=10)
     fecha_publicacion = models.DateField()
-
