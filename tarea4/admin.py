@@ -3,11 +3,10 @@ from tarea4.models import *
 
 # Register your models here.
 admin.site.register(Curso)
-admin.site.register(Docente)
-admin.site.register(Estudiante)
 admin.site.register(Grupo)
 admin.site.register(Coevaluacion)
 admin.site.register(Pregunta)
-admin.site.register(PreguntasEstudiantes)
 admin.site.register(HistorialGrupos)
 admin.site.register(NotaEstudiante)
+admin.site.register(Respuestas)
+admin.site.register(UsuarioCurso)
