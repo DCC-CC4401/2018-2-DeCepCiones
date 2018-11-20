@@ -30,7 +30,6 @@ def landingPageEstudiante(request):
 
 
 def perfilDueno(request):
-<<<<<<< HEAD
     if request.method == 'POST':
         form = PasswordChangeForm(user=request.user, data=request.POST)
         if form.is_valid():
@@ -39,8 +38,6 @@ def perfilDueno(request):
             messages.success(request, 'contraseña cambiada')
 
     userID = request.user.id    #placeholder
-=======
->>>>>>> a61d37b1aa5d118757de21d07cc89ce9aeb7fd5a
     listaCurso = Curso.objects.filter(estudiante__user_id__exact=userID)
     listaCoev = Coevaluacion.objects.filter(curso__estudiante__user_id=userID)
     estudiante = User.objects.get(user_id__exact=userID)
