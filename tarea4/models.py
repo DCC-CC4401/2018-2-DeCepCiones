@@ -20,63 +20,70 @@ no se si funciona asi. revisar o preguntar.
 """
 
 
-class Usuario(models.Model):
-    user = models.OneToOneField(User,
-                                on_delete=models.CASCADE)  # no se si esto funciona, Usuario es abstracto y user es el usuario de django.
-    nombre = models.CharField(max_length=60)
-    apellido = models.CharField(max_length=60)
-    rut = models.CharField(max_length=15)
-    email = models.EmailField()
-
-    class Meta:
-        abstract = True
-
-
-class Docente(Usuario):
-    cargo = models.CharField(max_length=20)
-    cursos = models.ManyToManyField(Curso)
-
-
-class Estudiante(Usuario):
-    cursos = models.ManyToManyField(Curso)
+class UsuarioCurso(models.Model):
+    listaCargos = (
+        ('ESTUDIANTE', 'estudiante'), ('AUXILIAR', 'auxiliar'), ('AYUDANTE', 'ayudante'), ('DOCENTE', 'docente'))
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    cargo = models.CharField(max_length=20, choices=listaCargos, default='ESTUDIANTE')
+    cursos = models.ForeignKey(Curso, on_delete=models.CASCADE)
 
 
 class Grupo(models.Model):
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    estudiante = models.ManyToManyField(Estudiante)
+    estudiante = models.ManyToManyField(User)
     Nombre = models.CharField(max_length=50)
     Estado = models.CharField(max_length=50)  # activo VS historico para efectos de historial.
 
 
+class Pregunta(models.Model):
+    pregunta1 = models.CharField(max_length=250)
+    pregunta2 = models.CharField(max_length=250)
+    pregunta3 = models.CharField(max_length=250)
+    pregunta4 = models.CharField(max_length=250)
+    pregunta5 = models.CharField(max_length=250)
+    pregunta6 = models.CharField(max_length=250)
+    pregunta7 = models.CharField(max_length=250)
+    pregunta8 = models.CharField(max_length=250)
+    pregunta9 = models.CharField(max_length=250)
+    pregunta10 = models.CharField(max_length=250)
+
+
 class Coevaluacion(models.Model):
     nombre = models.CharField(max_length=30)
-    estado = models.CharField(max_length=20)
+    listaEstados = (('ABIERTO', 'abierto'), ('CERRADO', 'cerrado'))
+    estado = models.CharField(max_length=20, choices=listaEstados, default='abierto')
     fecha_inicio = models.DateField()
     fecha_termino = models.DateField()
     curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    preguntas = models.ForeignKey(Pregunta, on_delete=models.SET_NULL, null=True)
 
 
-class Pregunta(models.Model):
-    pregunta = models.CharField(max_length=250)  # estará bien con 250?
+class Respuestas(models.Model):
     coevaluacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
-
-
-class PreguntasEstudiantes(models.Model):
-    respuesta = models.CharField(max_length=250)
-    estudianteRespondedor = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name="evaluador")
-    estudianteEvaluado = models.ForeignKey(Estudiante, on_delete=models.CASCADE, related_name="evaluado")
-    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
+    fechaRespuesta = models.DateField()
+    respuesta1 = models.CharField(max_length=10)
+    respuesta2 = models.CharField(max_length=10)
+    respuesta3 = models.CharField(max_length=10)
+    respuesta4 = models.CharField(max_length=10)
+    respuesta5 = models.CharField(max_length=10)
+    respuesta6 = models.CharField(max_length=10)
+    respuesta7 = models.CharField(max_length=10)
+    respuesta8 = models.CharField(max_length=10)
+    respuesta9 = models.CharField(max_length=250)
+    respuesta10 = models.CharField(max_length=250)
+    estudianteRespondedor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="evaluador")
+    estudianteEvaluado = models.ForeignKey(User, on_delete=models.CASCADE, related_name="evaluado")
 
 
 class HistorialGrupos(models.Model):
     grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE)
-    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(User, on_delete=models.CASCADE)
     fecha_entrada = models.DateField()
     fecha_salida = models.DateField()
 
 
 class NotaEstudiante(models.Model):
     coevaluacion = models.ForeignKey(Coevaluacion, on_delete=models.CASCADE)
-    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    estudiante = models.ForeignKey(User, on_delete=models.CASCADE)
     nota = models.CharField(max_length=10)
     fecha_publicacion = models.DateField()
