@@ -22,9 +22,9 @@ no se si funciona asi. revisar o preguntar.
 
 class UsuarioCurso(models.Model):
     listaCargos = (
-        ('ESTUDIANTE', 'estudiante'), ('AUXILIAR', 'auxiliar'), ('AYUDANTE', 'ayudante'), ('DOCENTE', 'docente'))
+        ('ALUMNO', 'alumno'), ('AUXILIAR', 'auxiliar'), ('AYUDANTE', 'ayudante'), ('PROFESOR', 'profesor'))
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    cargo = models.CharField(max_length=20, choices=listaCargos, default='ESTUDIANTE')
+    cargo = models.CharField(max_length=20, choices=listaCargos, default='alumno')
     cursos = models.ForeignKey(Curso, on_delete=models.CASCADE)
 
 

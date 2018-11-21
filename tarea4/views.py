@@ -11,22 +11,26 @@ def landingPageEstudiante(request):
     userID = request.user.id  # placeholder para la id correcta.
     userNombre = request.user.first_name + " " + request.user.last_name
     cursos = Curso.objects.filter(usuariocurso__user=userID)
-    coevals = Coevaluacion.objects.filter(curso__usuariocurso__user=userID).order_by('fecha_termino')
+    coevals = Coevaluacion.objects.filter(curso__usuariocurso__user=userID).order_by('-fecha_inicio')
     listaCurso = []
     listaCoev = []
+    cont = 0;
     for curso in cursos:
-        listaCurso.append({"cargo": curso.usuariocurso_set.get(user=userID).cargo, "nombre": curso.Nombre,
+        listaCurso.append({"cargo": curso.usuariocurso_set.get(user=userID).cargo.lower(), "nombre": curso.Nombre,
                            "codigo": curso.Codigo + str(curso.Seccion),
                            "semestre": str(curso.Ano) + " - " + str(curso.Semestre),
                            "id": curso.id})
 
     for coev in coevals:
+        if(cont >= 10):
+            break
         # No estamos haciendo los estados como secundarios
         listaCoev.append({'estadoTr': coev.estado, 'fechaInicio': coev.fecha_inicio, 'nombre': coev.nombre,
                           'cursoNombre': coev.curso.Nombre, 'cursoCod': coev.curso.Codigo,
                           'cursoSemestre': str(coev.curso.Ano) + "-" + str(coev.curso.Semestre),
                           'fechaFin': coev.fecha_termino, 'estado': coev.estado, 'responder': 'responder',
-                          'cargo': coev.curso.usuariocurso_set.get(user=userID).cargo, "id": coev.id})
+                          'cargo': coev.curso.usuariocurso_set.get(user=userID).cargo.lower(), "id": coev.id})
+        cont+=1
 
     return render(request, 'landingPageEstudiante.html', {'listaCoev': listaCoev, 'listaCurso': listaCurso, 'userNombre': userNombre})
 
@@ -40,9 +44,9 @@ def perfilDueno(request):
             messages.success(request, 'contraseña cambiada')
 
     userID = request.user.id    #placeholder
-    listaCurso = Curso.objects.filter(estudiante__user_id__exact=userID)
-    listaCoev = Coevaluacion.objects.filter(curso__estudiante__user_id=userID)
-    estudiante = User.objects.get(user_id__exact=userID)
+    listaCurso = Curso.objects.filter(usuariocurso__user=userID)
+    listaCoev = Coevaluacion.objects.filter(curso__usuariocurso__user=userID)
+    estudiante = User.objects.get(id=userID)
     cursosEstudiante = []
 
 
@@ -51,7 +55,7 @@ def perfilDueno(request):
             {'cargo': "alumno", 'nombre': curso.Nombre, 'codigo': curso.Codigo + "-" + str(curso.Seccion),
              'semestre': str(curso.Ano) + "-" + str(curso.Semestre)})
     dueno = {'nombre': estudiante.first_name, 'nombreCompleto': estudiante.first_name + " " + estudiante.last_name,
-             'email': estudiante.email, 'rut': estudiante.rut}
+             'email': estudiante.email, 'rut': estudiante.username}
 
     form = PasswordChangeForm(user=request.user)
 
@@ -62,7 +66,7 @@ def fichaCursoEstudiante(request, idCurso):
     userID = request.user.id
     userNombre = request.user.first_name + " " + request.user.last_name
     curso = Curso.objects.get(id=idCurso)
-    coevs = Coevaluacion.objects.filter(curso=idCurso, curso__estudiante__user_id=userID)
+    coevs = Coevaluacion.objects.filter(curso=idCurso, curso__usuariocurso__user=userID)
     dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + " " + str(curso.Ano) + ", " + str(
         curso.Semestre)
     listaCoev = []
@@ -79,7 +83,7 @@ def fichaCursoDocente(request, idCurso):
     curso = Curso.objects.get(id=idCurso)
     coevs = Coevaluacion.objects.filter(curso=idCurso)
     grupos = Grupo.objects.filter(curso=idCurso)
-    estudiantes = User.objects.filter(cursos=idCurso).distinct()
+    estudiantes = User.objects.filter(usuariocurso__cursos=idCurso, usuariocurso__cargo='estudiante')
     dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + " " + str(curso.Ano) + ", " + str(
         curso.Semestre)
     listaGrupos = []
@@ -92,12 +96,12 @@ def fichaCursoDocente(request, idCurso):
     for grupo in grupos:
         listaTitulos = []
         listaAlumnos = []
-        for alumno in curso.estudiante_set.all():
+        for alumno in grupo.estudiante.all():
             listaNotas = []
-            for nota in NotaEstudiante.objects.filter(coevaluacion__curso=idCurso, estudiante=alumno.user.id).order_by(
+            for nota in NotaEstudiante.objects.filter(coevaluacion__curso=idCurso, estudiante=alumno.id).order_by(
                     'fecha_publicacion'):
                 listaNotas.append(nota.nota)
-            listaAlumnos.append({'nombre': alumno.nombre, 'notas': listaNotas})
+            listaAlumnos.append({'nombre': alumno.first_name + " " + alumno.last_name, 'notas': listaNotas})
         for i in range(len(coevs)):
             listaTitulos.append("nota " + str(i + 1))
         listaGrupos.append({'nombre': grupo.Nombre, 'titulos': listaTitulos, 'alumnos': listaAlumnos})
@@ -126,9 +130,10 @@ def fichaCoevaluacionEstudiante(request, idCoev):
                               ", " + str(coevCurso.Ano) + "-" + str(coevCurso.Semestre),
                 'fechaInicio': coev.fecha_inicio, 'fechaTermino': coev.fecha_termino,
                 'estado': coev.estado}
-    listaIntegrantes = {}
+    listaIntegrantes = []
     for estudiante in grupo.estudiante.all():
-        listaIntegrantes[estudiante.first_name + " " + estudiante.last_name]= estudiante.id
+        if(estudiante.id != userID):
+            listaIntegrantes.append( {'nombre': estudiante.first_name + " " + estudiante.last_name, 'id': estudiante.id})
     return render(request, 'fichaCoevaluacionEstudiante.html', {'coev': infoCoev,'coevID':idCoev,'listaInt':listaIntegrantes,
                                                                 'formulario':form, 'nombreGrupo':grupo.Nombre, 'userNombre': userNombre})
 

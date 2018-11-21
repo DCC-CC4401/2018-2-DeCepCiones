@@ -2,6 +2,11 @@ function jumpTo(anchor) {
 	document.getElementById(anchor).scrollIntoView();
 }
 
+function actualizarVariables(idCoev, idEvaluado) {
+	document.getElementById("formCoevID").value = idCoev;
+	document.getElementById("formEvaluadoID").value = idEvaluado;
+}
+
 /* Home page */
 
 function addCoev() {

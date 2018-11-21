@@ -82,10 +82,10 @@
                             </thead>
                             <tbody>
                                 {% for estudiante in listaInt %}
-                                <tr>
+                                <tr class="tr-pendiente" onclick="actualizarVariables({{ coevID }}, {{ estudiante.id }}),jumpTo('responder-coeval') ">
 
-                                    <td>estudiante</td>
-                                    <td class="td-icon"></td>
+                                    <td>{{ estudiante.nombre }}</td>
+                                    <td class="td-icon"><a href="#responder-coeval" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a></td>
                                 </tr>
                                 {% endfor %}
                                 <tr class="tr-pendiente" onclick="jumpTo('responder-coeval')">
@@ -111,8 +111,8 @@
                 <h5 class="font-italic d-inline-block">Estas respondiendo para:</h5>
                 <h4 class="font-weight-bold d-inline-block ml-1">Estudiante 2</h4>
                     <form method="post">
-                        <input type="hidden" value="-1" id="idCoevResp">
-                        <input type="hidden" value="-1" id="idEstResp">
+                        {{ formulario.idCoev }}
+                        {{ formulario.idEvaluado }}
                         <ol>
                             <div class="criterio-coeval">
                                 <li class="h5">
