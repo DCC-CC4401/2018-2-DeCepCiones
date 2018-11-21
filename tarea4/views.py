@@ -114,7 +114,8 @@ def fichaCoevaluacionEstudiante(request, idCoev):
     userID = request.user.id
     coev = Coevaluacion.objects.get(id=idCoev)
     coevCurso = coev.curso
-    grupo = Grupo.objects.get(estudiante__user=userID, curso=coevCurso.id)
+    est = User.objects.get(id=userID)
+    grupo = est.grupo_set.get(curso=coevCurso.id)
     form = ResponderEval()
     infoCoev = {'nombre': coev.nombre,
                 'datosCurso': coevCurso.Codigo + " " + coevCurso.Nombre + " " + str(coevCurso.Seccion) +
