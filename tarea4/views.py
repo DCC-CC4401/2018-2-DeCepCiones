@@ -9,6 +9,7 @@ from django.contrib import messages
 # Create your views here.
 def landingPageEstudiante(request):
     userID = request.user.id  # placeholder para la id correcta.
+    userNombre = request.user.first_name + " " + request.user.last_name
     cursos = Curso.objects.filter(usuariocurso__user=userID)
     coevals = Coevaluacion.objects.filter(curso__usuariocurso__user=userID).order_by('fecha_termino')
     listaCurso = []
@@ -27,7 +28,7 @@ def landingPageEstudiante(request):
                           'fechaFin': coev.fecha_termino, 'estado': coev.estado, 'responder': 'responder',
                           'cargo': coev.curso.usuariocurso_set.get(user=userID).cargo, "id": coev.id})
 
-    return render(request, 'landingPageEstudiante.html', {'listaCoev': listaCoev, 'listaCurso': listaCurso})
+    return render(request, 'landingPageEstudiante.html', {'listaCoev': listaCoev, 'listaCurso': listaCurso, 'userNombre': userNombre})
 
 
 def perfilDueno(request):
@@ -49,7 +50,7 @@ def perfilDueno(request):
         cursosEstudiante.append(
             {'cargo': "alumno", 'nombre': curso.Nombre, 'codigo': curso.Codigo + "-" + str(curso.Seccion),
              'semestre': str(curso.Ano) + "-" + str(curso.Semestre)})
-    dueno = {'nombre': estudiante.nombre, 'nombreCompleto': estudiante.nombre + " " + estudiante.apellido,
+    dueno = {'nombre': estudiante.first_name, 'nombreCompleto': estudiante.first_name + " " + estudiante.last_name,
              'email': estudiante.email, 'rut': estudiante.rut}
 
     form = PasswordChangeForm(user=request.user)
@@ -59,6 +60,7 @@ def perfilDueno(request):
 
 def fichaCursoEstudiante(request, idCurso):
     userID = request.user.id
+    userNombre = request.user.first_name + " " + request.user.last_name
     curso = Curso.objects.get(id=idCurso)
     coevs = Coevaluacion.objects.filter(curso=idCurso, curso__estudiante__user_id=userID)
     dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + " " + str(curso.Ano) + ", " + str(
@@ -68,11 +70,12 @@ def fichaCursoEstudiante(request, idCurso):
         listaCoev.append(
             {'fechaIni': coev.fecha_inicio, 'fechaTer': coev.fecha_termino, 'nombre': coev.nombre, 'estado':
                 coev.estado, 'id': coev.id})
-    return render(request, 'fichaCursoEstudiante.html', {'dataCurso': dataCurso, 'coevs': listaCoev})
+    return render(request, 'fichaCursoEstudiante.html', {'dataCurso': dataCurso, 'coevs': listaCoev, 'userNombre': userNombre})
 
 
 def fichaCursoDocente(request, idCurso):
     userID = request.user.id
+    userNombre = request.user.first_name + " " + request.user.last_name
     curso = Curso.objects.get(id=idCurso)
     coevs = Coevaluacion.objects.filter(curso=idCurso)
     grupos = Grupo.objects.filter(curso=idCurso)
@@ -105,13 +108,14 @@ def fichaCursoDocente(request, idCurso):
                 coev.estado, 'id': coev.id})
 
     return render(request, 'fichaCursoDocente.html', {'dataCurso': dataCurso, 'grupos': listaGrupos, 'coevs': listaCoev,
-                                                      'estudiantes': listaEstudiantes})
+                                                      'estudiantes': listaEstudiantes, 'userNombre': userNombre})
 
 
 def fichaCoevaluacionEstudiante(request, idCoev):
     if (request.method=='POST'):
         a=1
     userID = request.user.id
+    userNombre = request.user.first_name + " " + request.user.last_name
     coev = Coevaluacion.objects.get(id=idCoev)
     coevCurso = coev.curso
     est = User.objects.get(id=userID)
@@ -126,5 +130,5 @@ def fichaCoevaluacionEstudiante(request, idCoev):
     for estudiante in grupo.estudiante.all():
         listaIntegrantes[estudiante.first_name + " " + estudiante.last_name]= estudiante.id
     return render(request, 'fichaCoevaluacionEstudiante.html', {'coev': infoCoev,'coevID':idCoev,'listaInt':listaIntegrantes,
-                                                                'formulario':form, 'nombreGrupo':grupo.Nombre})
+                                                                'formulario':form, 'nombreGrupo':grupo.Nombre, 'userNombre': userNombre})
 
