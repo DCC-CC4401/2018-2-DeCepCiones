@@ -7,7 +7,6 @@ from tarea4.forms import *
 from django.contrib.auth import *
 from django.contrib import messages
 
-
 # Create your views here.
 def landingPageEstudiante(request):
     userID = request.user.id  # placeholder para la id correcta.
@@ -17,10 +16,10 @@ def landingPageEstudiante(request):
     listaCurso = []
     listaCoev = []
     cont = 0;
-    for curso in cursos:
+    for curso in cursos.order_by('-Ano', '-Semestre'):
         listaCurso.append({"cargo": curso.usuariocurso_set.get(user=userID).cargo.lower(), "nombre": curso.Nombre,
                            "codigo": curso.Codigo + str(curso.Seccion),
-                           "semestre": str(curso.Ano) + " - " + str(curso.Semestre),
+                           "semestre": str(curso.Ano) + "-" + str(curso.Semestre),
                            "id": curso.id})
 
     for coev in coevals:
@@ -41,7 +40,7 @@ def landingPageEstudiante(request):
         elif coev.estado.lower() == "abierta":
             estado = "pendiente"
         else:
-            estado = "cerrada"
+            estado = coev.estado.lower()
 
         listaCoev.append({'estadoTr': estado, 'fechaInicio': coev.fecha_inicio, 'nombre': coev.nombre,
                           'cursoNombre': coev.curso.Nombre, 'cursoCod': coev.curso.Codigo,
@@ -67,13 +66,13 @@ def perfilDueno(request):
     estudiante = User.objects.get(id=userID)
     cursosEstudiante = []
 
-    for curso in listaCurso:
+    for curso in listaCurso.order_by('-Ano', '-Semestre'):
         listaNotas = []
         for nota in notas.filter(coevaluacion__curso=curso.id):
             listaNotas.append({'nombre': nota.coevaluacion.nombre, 'publicada': str(nota.fecha_publicacion), 'nota': nota.nota})
         cursosEstudiante.append(
             {'cargo': UsuarioCurso.objects.get(cursos=curso.id, user=userID).cargo.lower(), 'nombre': curso.Nombre, 'codigo': curso.Codigo + "-" + str(curso.Seccion),
-             'semestre': str(curso.Ano) + "-" + str(curso.Semestre), 'notas': listaNotas})
+             'semestre': str(curso.Ano) + "-" + str(curso.Semestre), 'notas': listaNotas, 'id': curso.id    })
 
     dueno = {'nombre': estudiante.first_name, 'nombreCompleto': estudiante.first_name + " " + estudiante.last_name,
              'email': estudiante.email, 'rut': estudiante.username}
@@ -108,7 +107,7 @@ def fichaCursoEstudiante(request, idCurso):
         elif coev.estado.lower() == "abierta":
             estado = "pendiente"
         else:
-            estado = "cerrada"
+            estado = coev.estado.lower()
 
         listaCoev.append(
             {'fechaIni': coev.fecha_inicio, 'fechaTer': coev.fecha_termino, 'nombre': coev.nombre, 'estadoTr':
@@ -129,6 +128,7 @@ def fichaCursoDocente(request, idCurso):
     listaGrupos = []
     listaCoev = []
     listaEstudiantes = []
+    nuevaCoev = agregarCoevForm()
 
     for estudiante in estudiantes:
         listaEstudiantes.append(estudiante.nombre)
@@ -149,10 +149,11 @@ def fichaCursoDocente(request, idCurso):
     for coev in coevs:
         listaCoev.append(
             {'fechaIni': coev.fecha_inicio, 'fechaTer': coev.fecha_termino, 'nombre': coev.nombre, 'estado':
-                coev.estado, 'id': coev.id})
+                coev.estado.lower(), 'estadoPrint': coev.estado.lower().capitalize(), 'id': coev.id})
 
     return render(request, 'fichaCursoDocente.html', {'dataCurso': dataCurso, 'grupos': listaGrupos, 'coevs': listaCoev,
-                                                      'estudiantes': listaEstudiantes, 'userNombre': userNombre})
+                                                      'estudiantes': listaEstudiantes, 'userNombre': userNombre,
+                                                      'agregarCoev': nuevaCoev, 'idCurso': idCurso})
 
 
 def fichaCoevaluacionEstudiante(request, idCoev):
@@ -180,7 +181,7 @@ def fichaCoevaluacionEstudiante(request, idCoev):
     elif coev.estado.lower() == "abierta":
         estado = "pendiente"
     else:
-        estado = "cerrada"
+        estado = coev.estado.lower()
 
     infoCoev = {'nombre': coev.nombre,
                 'datosCurso': coevCurso.Codigo + " " + coevCurso.Nombre + " " + str(coevCurso.Seccion) +
@@ -233,4 +234,53 @@ def fichaCoevEstHandler(request):
     return redirect('landingPage')
 
 
+def repartidor(request):
+    userID = request.user.id
+    cargos = UsuarioCurso.objects.filter(user=userID)
 
+    alumno = True
+    for cargo in cargos:
+        if cargo.cargo != 'ALUMNO':
+            alumno = False
+            break
+
+    if alumno:
+        return redirect('landingPage')
+    else:
+        return redirect('perfil')
+
+def fichaCurso(request, idCurso):
+    userID = request.user.id
+    cargos = UsuarioCurso.objects.filter(user=userID, cursos=idCurso)
+
+    if cargos.exists():
+        alumno = True
+        for cargo in cargos:
+            if cargo.cargo != 'ALUMNO':
+                alumno = False
+                break
+
+        if alumno:
+            return redirect('fichaCursoEstudiante', idCurso=idCurso)
+        else:
+            return redirect('fichaCursoDocente', idCurso=idCurso)
+    else:
+        return redirect('repartidor')
+
+
+def agregarCoev(request):
+    if request.method == 'POST':
+        form = agregarCoevForm(request.POST)
+        if form.is_valid():
+            idCurso = form.cleaned_data['idCurso']
+            coev = Coevaluacion()
+            coev.nombre = form.cleaned_data['nombre']
+            coev.fecha_inicio = form.cleaned_data['fecha_inicio']
+            coev.fecha_termino = form.cleaned_data['fecha_termino']
+            coev.curso = Curso.objects.get(id=idCurso)
+            coev.preguntas = Pregunta.objects.get(id=1)
+            coev.save()
+
+            return redirect('fichaCursoDocente', idCurso=idCurso)
+
+    return redirect('fichaCursoDocente', idCurso=idCurso)

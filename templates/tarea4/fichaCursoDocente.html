@@ -50,10 +50,12 @@
             <!-- Tablas de resumen -->
             <div class="row">
                 <!-- Tabla de coevaluaciones -->
-                <div class="col-md-10 offset-1">
-            		<h4 class="d-inline-block mt-1">Tus coevaluaciones del curso</h4>
-
-                    <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
+                <div class="col-md-10 offset-1 ">
+                    <div class="row justify-content-between">
+            		    <h4 class="d-inline-block mt-1">Tus coevaluaciones del curso</h4>
+                        <button class="btn btn-sm btn-primary col-md-2 mr-4" onclick="showNewCoevaluacion({{ idCurso }})">Agregar coevaluación</button>
+                    </div>
+                    <div class="table-wrap table-responsive my-1" id="tablaCoevs"> <!-- "Envoltura" de la tabla -->
                         <table class="table table-coeval-curso table-striped table-hover mb-0"> <!-- Tabla -->
                             <!-- Encabezados de tabla (Table Headers) -->
                             <thead class="thead-light">
@@ -75,51 +77,36 @@
                                         {{ coev.fechaIni }}
                                     </td>
                                     <!-- Título de coevaluación -->
-                                    <td>{{ coev.nombre }}</td>
+                                    <td> <a href="{% url 'fichaCoevaluacion' coev.id %}">{{ coev.nombre }}</a> </td>
                                     <!-- Fecha de término -->
                                     <td class="td-fecha">
                                         {{ coev.fechaTer }}
                                     </td>
                                     <!-- Estado -->
-                                    <td>{{ coev.estado }}</td>
+                                    <td>{{ coev.estadoPrint }}</td>
                                     <!-- Ícono de acción (responder) -->
                                     <td class="td-icon">
                                         {% if coev.estado == 'abierta' %}
-                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
+                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/edit-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
+                                        {% elif coev.estado == 'cerrada' %}
+                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/publish-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
+                                        {% elif coev.estado == 'publicada' %}
+                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/export-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
-                                <tr class="tr-pendiente">
-                                    <td class="td-fecha">
-                                        12:03 11/11/18
-                                    </td>
-                                    <td>Tarea con nombre muy largo que ocupa todo el espacio</td>
-                                    <td class="td-fecha">
-                                        23:59 21/11/18
-                                    </td>
-                                    <td>Pendiente</td>
-                                    <td class="td-icon">
-                                        <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="td-fecha">15:15 10/11/18</td>
-                                    <td>Tarea 2</td>
-                                    <td class="td-fecha">23:59 19/11/18</td>
-                                    <td>Cerrada</td>
-                                    <td class="td-icon">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="td-fecha">03:53 20/10/18</td>
-                                    <td>Tarea 1</td>
-                                    <td class="td-fecha">23:59 27/10/18</td>
-                                    <td>Publicada</td>
-                                    <td class="td-icon">
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div id="nuevaCoev">
+                        <h3 class="d-inline-block mt-1">Agregar una nueva Coevaluacion</h3>
+                        <form action="{% url 'agregarCoev' %}" method="post">
+                            {% csrf_token %}
+                            {{ agregarCoev }}
+                            <input type="submit" value="Agregar">
+                            <input type="reset" onclick="showTablaCoev()" value="Cancelar">
+                        </form>
                     </div>
                 </div>
             </div>

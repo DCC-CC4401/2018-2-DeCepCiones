@@ -72,6 +72,17 @@ function cancelPass() {
 
 /* Gestión Curso */
 
+function showNewCoevaluacion(idCurso) {
+    document.getElementById('tablaCoevs').style.display = "none";
+    document.getElementById('nuevaCoev').style.display = "block";
+    document.getElementById('formCursoID').value = idCurso;
+}
+
+function showTablaCoev() {
+    document.getElementById('tablaCoevs').style.display = "block";
+    document.getElementById('nuevaCoev').style.display = "none";
+}
+
 function showGestionEstudiante() {
     document.getElementById("gestion-grupo").style.display = "none";
     document.getElementById("gestion-estudiante").style.display = "block";
