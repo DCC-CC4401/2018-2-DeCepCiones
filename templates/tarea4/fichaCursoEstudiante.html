@@ -69,13 +69,13 @@
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
                             {% for coev in coevs %}
-                                <tr class="tr-{{ coev.estado }}"> <!-- Fila destacada como Pendiente -->
+                                <tr class="tr-{{ coev.estadoTr }}"> <!-- Fila destacada como Pendiente -->
                                     <!-- Fecha de inicio -->
                                     <td class="td-fecha">
                                         {{ coev.fechaIni }}
                                     </td>
                                     <!-- Título de coevaluación -->
-                                    <td>{{ coev.nombre }}</td>
+                                    <td> <a href="{% url 'fichaCoevaluacion' coev.id %}"> {{ coev.nombre }}</a>  </td>
                                     <!-- Fecha de término -->
                                     <td class="td-fecha">
                                         {{ coev.fechaTer }}
@@ -84,7 +84,9 @@
                                     <td>{{ coev.estado }}</td>
                                     <!-- Ícono de acción (responder) -->
                                     <td class="td-icon">
-                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
+                                        {% if coev.estado == 'Pendiente' %}
+                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png'%}" alt="Responder coevaluación" width="28" height="28"></a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -34,7 +34,6 @@ def landingPageEstudiante(request):
                     contestada = False;
                     break
         estado = ""
-        print(coev.estado)
         if contestada:
             estado = "contestada"
         elif coev.estado.lower() == "abierta"   :
@@ -90,10 +89,30 @@ def fichaCursoEstudiante(request, idCurso):
     dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + " " + str(curso.Ano) + ", " + str(
         curso.Semestre)
     listaCoev = []
+
     for coev in coevs:
+        grupo = Grupo.objects.get(curso=coev.curso, estudiante=userID).estudiante.all()
+        contestada = True
+
+        for integrante in grupo:
+            if integrante.id != userID:
+                if not Respuestas.objects.filter(coevaluacion=coev.id, estudianteEvaluado=integrante.id,
+                                                 estudianteRespondedor=userID).exists():
+                    contestada = False;
+                    break
+        estado = ""
+        print(coev.estado)
+        if contestada:
+            estado = "contestada"
+        elif coev.estado.lower() == "abierta":
+            estado = "pendiente"
+        else:
+            estado = "cerrada"
+
         listaCoev.append(
-            {'fechaIni': coev.fecha_inicio, 'fechaTer': coev.fecha_termino, 'nombre': coev.nombre, 'estado':
-                coev.estado, 'id': coev.id})
+            {'fechaIni': coev.fecha_inicio, 'fechaTer': coev.fecha_termino, 'nombre': coev.nombre, 'estadoTr':
+                estado, 'id': coev.id, 'estado': estado.capitalize()})
+
     return render(request, 'fichaCursoEstudiante.html', {'dataCurso': dataCurso, 'coevs': listaCoev, 'userNombre': userNombre})
 
 
