@@ -93,8 +93,8 @@
                                 <td>{{ coev.estado }}</td>
                                 <!-- Ícono de acción (responder) -->
                                 <td class="td-icon">
-                                    {% if coev.responder != Null %}
-                                    <a href="#" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png'%}" alt="Responder coevaluación" width="28" height="28"></a>
+                                    {% if coev.estado == 'Pendiente' %}
+                                    <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png'%}" alt="Responder coevaluación" width="28" height="28"></a>
                                     {% endif %}
                                 </td>
                             </tr>

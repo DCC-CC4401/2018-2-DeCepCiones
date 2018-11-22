@@ -22,15 +22,32 @@ def landingPageEstudiante(request):
                            "id": curso.id})
 
     for coev in coevals:
-        if(cont >= 10):
+        if cont >= 10:
             break
         # No estamos haciendo los estados como secundarios
-        listaCoev.append({'estadoTr': coev.estado, 'fechaInicio': coev.fecha_inicio, 'nombre': coev.nombre,
+        grupo = Grupo.objects.get(curso=coev.curso, estudiante=userID).estudiante.all()
+        contestada = True
+
+        for integrante in grupo:
+            if integrante.id != userID:
+                if not Respuestas.objects.filter(coevaluacion=coev.id, estudianteEvaluado=integrante.id, estudianteRespondedor=userID).exists():
+                    contestada = False;
+                    break
+        estado = ""
+        print(coev.estado)
+        if contestada:
+            estado = "contestada"
+        elif coev.estado.lower() == "abierta"   :
+            estado = "pendiente"
+        else:
+            estado = "cerrada"
+
+        listaCoev.append({'estadoTr': estado, 'fechaInicio': coev.fecha_inicio, 'nombre': coev.nombre,
                           'cursoNombre': coev.curso.Nombre, 'cursoCod': coev.curso.Codigo,
                           'cursoSemestre': str(coev.curso.Ano) + "-" + str(coev.curso.Semestre),
-                          'fechaFin': coev.fecha_termino, 'estado': coev.estado, 'responder': 'responder',
+                          'fechaFin': coev.fecha_termino, 'estado': estado.capitalize(),
                           'cargo': coev.curso.usuariocurso_set.get(user=userID).cargo.lower(), "id": coev.id})
-        cont+=1
+        cont += 1
 
     return render(request, 'landingPageEstudiante.html', {'listaCoev': listaCoev, 'listaCurso': listaCurso, 'userNombre': userNombre})
 

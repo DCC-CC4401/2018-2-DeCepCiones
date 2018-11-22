@@ -50,7 +50,7 @@ class Pregunta(models.Model):
 
 class Coevaluacion(models.Model):
     nombre = models.CharField(max_length=30)
-    listaEstados = (('ABIERTO', 'abierto'), ('CERRADO', 'cerrado'))
+    listaEstados = (('ABIERTA', 'abierta'), ('CERRADA', 'cerrada'), ('PUBLICADA', 'publicada'))
     estado = models.CharField(max_length=20, choices=listaEstados, default='abierto')
     fecha_inicio = models.DateField()
     fecha_termino = models.DateField()
