@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <h6 class="text-muted mt-3 mb-0 pb-1 border-bottom">Estado</h6>
-                    <span>{{ coev.estado }}</span>
+                    <span>{{ coev.estadoPrint }}</span>
                 </div>
                 <!-- FIN Información -->
 
@@ -82,20 +82,19 @@
                             </thead>
                             <tbody>
                                 {% for estudiante in listaInt %}
-                                <tr class="tr-pendiente" onclick="actualizarVariables({{ coevID }}, {{ estudiante.id }}),jumpTo('responder-coeval') ">
+                                <tr class="tr-pendiente"
+                                    {% if not estudiante.contestada %}
+                                    onclick='actualizarVariables({{ coevID }}, {{ estudiante.id }}, {{ userID }}, "{{ estudiante.nombre }}"); jumpTo("responder-coeval")
+                                    {% endif %} '>
 
                                     <td>{{ estudiante.nombre }}</td>
-                                    <td class="td-icon"><a href="#responder-coeval" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a></td>
+                                    <td class="td-icon">
+                                        {% if not estudiante.contestada %}
+                                        <a href="#responder-coeval" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 {% endfor %}
-                                <tr class="tr-pendiente" onclick="jumpTo('responder-coeval')">
-                                    <td>Estudiante 2 (clickeable)</td>
-                                    <td class="td-icon"><a href="#responder-coeval" title="Responder coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/answer-icon.png' %}" alt="Responder coevaluación" width="28" height="28"></a></td>
-                                </tr>
-                                <tr>
-                                    <td>Estudiante 3</td>
-                                    <td class="td-icon"></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -106,17 +105,20 @@
             <h4 class="d-inline-block mt-1 mb-0">Responder coevaluación</h4>
             <hr/>
             <!-- Detalle de coevaluación contestada -->
+            {% if coev.estado == 'pendiente' %}
             <div id="responder-coeval" class="row">
                 <div class="col-10 offset-1">
                 <h5 class="font-italic d-inline-block">Estas respondiendo para:</h5>
-                <h4 class="font-weight-bold d-inline-block ml-1">Estudiante 2</h4>
-                    <form method="post">
+                <h4 class="font-weight-bold d-inline-block ml-1" id="nombreEvaluado"><Estudiante></Estudiante></h4>
+                    <form action='{% url 'responderCoev' %}' method="post">
+                        {% csrf_token %}
                         {{ formulario.idCoev }}
                         {{ formulario.idEvaluado }}
+                        {{ formulario.idEvaluador }}
                         <ol>
                             <div class="criterio-coeval">
                                 <li class="h5">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    {{ listaPreguntas.pregunta1 }}
                                 </li>
                                 <div class="form-check form-check-inline">
                                     {{ formulario.pregunta1 }}
@@ -124,39 +126,75 @@
                             </div>
                             <div class="criterio-coeval">
                                 <li class="h5">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                    {{ listaPreguntas.pregunta2 }}
                                 </li>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                                    <label class="form-check-label" for="inlineRadio1">1</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                    <label class="form-check-label" for="inlineRadio2">2</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                    <label class="form-check-label" for="inlineRadio3">3</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                    <label class="form-check-label" for="inlineRadio3">4</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                    <label class="form-check-label" for="inlineRadio3">5</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                    <label class="form-check-label" for="inlineRadio3">6</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
-                                    <label class="form-check-label" for="inlineRadio3">7</label>
+                                    {{ formulario.pregunta2 }}
                                 </div>
                             </div>
                             <div class="criterio-coeval">
-                                <li class="h5">...</li>
+                                <li class="h5">
+                                    {{ listaPreguntas.pregunta3 }}
+                                </li>
+                                <div class="form-check form-check-inline">
+                                    {{ formulario.pregunta3 }}
+                                </div>
+                            </div>
+                            <div class="criterio-coeval">
+                                <li class="h5">
+                                    {{ listaPreguntas.pregunta4 }}
+                                </li>
+                                <div class="form-check form-check-inline">
+                                    {{ formulario.pregunta4 }}
+                                </div>
+                            </div>
+                            <div class="criterio-coeval">
+                                <li class="h5">
+                                    {{ listaPreguntas.pregunta5 }}
+                                </li>
+                                <div class="form-check form-check-inline">
+                                    {{ formulario.pregunta5 }}
+                                </div>
+                            </div>
+                            <div class="criterio-coeval">
+                                <li class="h5">
+                                    {{ listaPreguntas.pregunta6 }}
+                                </li>
+                                <div class="form-check form-check-inline">
+                                    {{ formulario.pregunta6 }}
+                                </div>
+                            </div>
+                            <div class="criterio-coeval">
+                                <li class="h5">
+                                    {{ listaPreguntas.pregunta7 }}
+                                </li>
+                                <div class="form-check form-check-inline">
+                                    {{ formulario.pregunta7 }}
+                                </div>
+                            </div>
+                            <div class="criterio-coeval">
+                                <li class="h5">
+                                    {{ listaPreguntas.pregunta8 }}
+                                </li>
+                                <div class="form-check form-check-inline">
+                                    {{ formulario.pregunta8 }}
+                                </div>
+                            </div>
+                            <div class="criterio-coeval">
+                                <li class="h5">
+                                    {{ listaPreguntas.pregunta9 }}
+                                </li>
+                                <div class="form-check form-check-inline">
+                                    {{ formulario.pregunta9 }}
+                                </div>
+                            </div>
+                            <div class="criterio-coeval">
+                                <li class="h5">
+                                    {{ listaPreguntas.pregunta10 }}
+                                </li>
+                                <div class="form-check form-check-inline">
+                                    {{ formulario.pregunta10 }}
+                                </div>
                             </div>
                         </ol>
                     <button type="submit" class="btn btn-primary-custom">Enviar coevaluación</button>
@@ -164,6 +202,7 @@
 
                 </div>
             </div>
+            {% endif %}
         </div>
     </body>
     </html>

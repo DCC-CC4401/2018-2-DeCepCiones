@@ -1,5 +1,7 @@
 from django.contrib.auth.forms import PasswordChangeForm
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.utils.datetime_safe import datetime
+
 from tarea4.models import *
 from tarea4.forms import *
 from django.contrib.auth import *
@@ -36,7 +38,7 @@ def landingPageEstudiante(request):
         estado = ""
         if contestada:
             estado = "contestada"
-        elif coev.estado.lower() == "abierta"   :
+        elif coev.estado.lower() == "abierta":
             estado = "pendiente"
         else:
             estado = "cerrada"
@@ -101,7 +103,6 @@ def fichaCursoEstudiante(request, idCurso):
                     contestada = False;
                     break
         estado = ""
-        print(coev.estado)
         if contestada:
             estado = "contestada"
         elif coev.estado.lower() == "abierta":
@@ -163,16 +164,73 @@ def fichaCoevaluacionEstudiante(request, idCoev):
     coevCurso = coev.curso
     est = User.objects.get(id=userID)
     grupo = est.grupo_set.get(curso=coevCurso.id)
+    preguntas = Pregunta.objects.get(coevaluacion=idCoev)
     form = ResponderEval()
+    listaIntegrantes = []
+    coevContestada = True;
+    for estudiante in grupo.estudiante.all():
+        if estudiante.id != userID:
+            contestada = Respuestas.objects.filter(estudianteEvaluado=estudiante.id, estudianteRespondedor=userID, coevaluacion=idCoev).exists()
+            coevContestada = coevContestada and contestada
+            listaIntegrantes.append( {'nombre': estudiante.first_name + " " + estudiante.last_name, 'id': estudiante.id,
+                                      'contestada': contestada})
+    estado = ""
+    if coevContestada:
+        estado = "contestada"
+    elif coev.estado.lower() == "abierta":
+        estado = "pendiente"
+    else:
+        estado = "cerrada"
+
     infoCoev = {'nombre': coev.nombre,
                 'datosCurso': coevCurso.Codigo + " " + coevCurso.Nombre + " " + str(coevCurso.Seccion) +
                               ", " + str(coevCurso.Ano) + "-" + str(coevCurso.Semestre),
                 'fechaInicio': coev.fecha_inicio, 'fechaTermino': coev.fecha_termino,
-                'estado': coev.estado}
-    listaIntegrantes = []
-    for estudiante in grupo.estudiante.all():
-        if(estudiante.id != userID):
-            listaIntegrantes.append( {'nombre': estudiante.first_name + " " + estudiante.last_name, 'id': estudiante.id})
+                'estado': estado, 'estadoPrint': estado.capitalize()}
+    listaPreguntas = {
+        'pregunta1': preguntas.pregunta1,
+        'pregunta2': preguntas.pregunta2,
+        'pregunta3': preguntas.pregunta3,
+        'pregunta4': preguntas.pregunta4,
+        'pregunta5': preguntas.pregunta5,
+        'pregunta6': preguntas.pregunta6,
+        'pregunta7': preguntas.pregunta7,
+        'pregunta8': preguntas.pregunta8,
+        'pregunta9': preguntas.pregunta9,
+        'pregunta10': preguntas.pregunta10,
+    }
+
+
     return render(request, 'fichaCoevaluacionEstudiante.html', {'coev': infoCoev,'coevID':idCoev,'listaInt':listaIntegrantes,
-                                                                'formulario':form, 'nombreGrupo':grupo.Nombre, 'userNombre': userNombre})
+                                                                'formulario':form, 'nombreGrupo':grupo.Nombre, 'userNombre': userNombre,
+                                                                'listaPreguntas': listaPreguntas, 'userID': userID})
+
+
+def fichaCoevEstHandler(request):
+    if request.method == 'POST':
+        form = ResponderEval(request.POST)
+        if form.is_valid():
+            idCoev = form.cleaned_data['idCoev']
+            respuesta = Respuestas()
+            respuesta.respuesta1 = form.cleaned_data['pregunta1']
+            respuesta.respuesta2 = form.cleaned_data['pregunta2']
+            respuesta.respuesta3 = form.cleaned_data['pregunta3']
+            respuesta.respuesta4 = form.cleaned_data['pregunta4']
+            respuesta.respuesta5 = form.cleaned_data['pregunta5']
+            respuesta.respuesta6 = form.cleaned_data['pregunta6']
+            respuesta.respuesta7 = form.cleaned_data['pregunta7']
+            respuesta.respuesta8 = form.cleaned_data['pregunta8']
+            respuesta.respuesta9 = form.cleaned_data['pregunta9']
+            respuesta.respuesta10 = form.cleaned_data['pregunta10']
+            respuesta.coevaluacion = Coevaluacion.objects.get(id=idCoev)
+            respuesta.estudianteEvaluado = User.objects.get(id=form.cleaned_data['idEvaluado'])
+            respuesta.estudianteRespondedor = User.objects.get(id=form.cleaned_data['idEvaluador'])
+            respuesta.fechaRespuesta = datetime.now()
+            respuesta.save()
+
+            return redirect('fichaCoevaluacion', idCoev=idCoev)
+
+    return redirect('landingPage')
+
+
 

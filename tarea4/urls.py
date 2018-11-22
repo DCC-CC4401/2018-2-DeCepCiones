@@ -12,4 +12,5 @@ urlpatterns = [
     path('fichaCursoDoc/<int:idCurso>', views.fichaCursoDocente, name='fichaCursoDocente'),
     path('fichaCursoEst/<int:idCurso>', views.fichaCursoEstudiante, name='fichaCursoEstudiante'),
     path('fichaCoev/<int:idCoev>', views.fichaCoevaluacionEstudiante, name='fichaCoevaluacion'),
+    path('noentresaqui', views.fichaCoevEstHandler, name='responderCoev')
 ]

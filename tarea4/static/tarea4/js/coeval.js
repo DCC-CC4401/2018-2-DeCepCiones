@@ -2,9 +2,11 @@ function jumpTo(anchor) {
 	document.getElementById(anchor).scrollIntoView();
 }
 
-function actualizarVariables(idCoev, idEvaluado) {
+function actualizarVariables(idCoev, idEvaluado, idEvaluador, nombreEvaluado) {
 	document.getElementById("formCoevID").value = idCoev;
 	document.getElementById("formEvaluadoID").value = idEvaluado;
+	document.getElementById("formEvaluadorID").value = idEvaluador;
+	document.getElementById("nombreEvaluado").innerHTML = nombreEvaluado;
 }
 
 /* Home page */
