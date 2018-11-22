@@ -75,7 +75,7 @@
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
                                 {% for curso in listaCurso %}
-                                <tr id="row-btn" onclick="showNotas()">
+                                <tr id="row-btn" onclick='setNotas("{{ curso.codigo}}", {{curso.notas }});showNotas()'>
                                     <td class="td-curso-full">
                                         <div class="cargos cargos-{{ curso.cargo }} tooltip-custom">
                                             <span class="tooltiptext"></span>
@@ -145,7 +145,7 @@
                         <h5 class="float-right mb-0 mt-2 text-muted" id="currentCurso">CC5402-1, 2018-2</h5>
 
                         <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
-                            <table class="table table-notas-perfil table-striped table-hover mb-0"> <!-- Tabla -->
+                            <table class="table table-notas-perfil table-striped table-hover mb-0" id="tablaNotas"> <!-- Tabla -->
                                 <!-- Encabezados de tabla (Table Headers) -->
                                 <thead class="thead-light">
                                     <tr> <!-- Fila (Table Row) -->

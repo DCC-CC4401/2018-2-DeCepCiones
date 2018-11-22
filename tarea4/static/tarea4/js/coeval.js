@@ -44,9 +44,21 @@ function showNotas() {
     document.getElementById("cambiar-contrasena").style.display = "none";
     document.getElementById("notas-resumen").style.display = "block";
     document.getElementById("notas-placeholder").style.display = "none";
-    document.getElementById("row-btn").classList.add("active");
+    //document.getElementById("row-btn").classList.add("active");
     var changePass = document.getElementById("change-pass-btn");
     if (changePass !== null) changePass.classList.remove("active");
+}
+
+function setNotas(nombre, notas) {
+    var tBod = $('#tablaNotas > tbody');
+    tBod.empty();
+    var cursoNom = $('#currentCurso').empty();
+    cursoNom.append(nombre);
+
+    notas.forEach(function(ele) {
+       tBod.append("<tr><td class='td-fecha'>" + ele.publicada + "</td><td>" +
+           ele.nombre + "</td><td class='td-nota'>" + ele.nota + "</td></tr>")
+    });
 }
 
 function cancelPass() {

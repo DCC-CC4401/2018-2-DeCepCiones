@@ -45,21 +45,24 @@ def perfilDueno(request):
 
     userID = request.user.id    #placeholder
     listaCurso = Curso.objects.filter(usuariocurso__user=userID)
-    listaCoev = Coevaluacion.objects.filter(curso__usuariocurso__user=userID)
+    notas = NotaEstudiante.objects.filter(estudiante=userID)
     estudiante = User.objects.get(id=userID)
     cursosEstudiante = []
 
-
     for curso in listaCurso:
+        listaNotas = []
+        for nota in notas.filter(coevaluacion__curso=curso.id):
+            listaNotas.append({'nombre': nota.coevaluacion.nombre, 'publicada': str(nota.fecha_publicacion), 'nota': nota.nota})
         cursosEstudiante.append(
-            {'cargo': "alumno", 'nombre': curso.Nombre, 'codigo': curso.Codigo + "-" + str(curso.Seccion),
-             'semestre': str(curso.Ano) + "-" + str(curso.Semestre)})
+            {'cargo': UsuarioCurso.objects.get(cursos=curso.id, user=userID).cargo.lower(), 'nombre': curso.Nombre, 'codigo': curso.Codigo + "-" + str(curso.Seccion),
+             'semestre': str(curso.Ano) + "-" + str(curso.Semestre), 'notas': listaNotas})
+
     dueno = {'nombre': estudiante.first_name, 'nombreCompleto': estudiante.first_name + " " + estudiante.last_name,
              'email': estudiante.email, 'rut': estudiante.username}
 
     form = PasswordChangeForm(user=request.user)
 
-    return render(request, 'perfilDueno.html', {'dueno': dueno, 'listaCurso': cursosEstudiante, 'contraseñaForm': form, 'listaCoev': listaCoev})
+    return render(request, 'perfilDueno.html', {'dueno': dueno, 'listaCurso': cursosEstudiante, 'contraseñaForm': form})
 
 
 def fichaCursoEstudiante(request, idCurso):
