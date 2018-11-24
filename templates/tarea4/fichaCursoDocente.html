@@ -112,7 +112,9 @@
             </div>
 
 
+
              <!-- Gestión del curso -->
+            <hr/>
             <h4 class="d-inline-block mt-1 mb-0">Gestión del Curso</h4>
             <div class="d-inline-block ml-2">
                 <a href="#" class="small" title="Cargar información">
@@ -128,28 +130,31 @@
                 </form>
                 <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right ml-5">Agregar alumno</button>
             </div>
-            <hr>
-            <div class="row">
+            <!--<div class="row">
                 <div class="col-md-4">
                     <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-left mb-3">Agregar grupo
                     </button>
                 </div>
-            </div>
+            </div>-->
             <div class="row"> <!-- div para tarjetas de grupo -->
                 <div class="col-md-10 offset-1">
-            		<h4 class="d-inline-block mt-1">Grupos del curso</h4>
-
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-left mb-3">Agregar grupo
+                            </button>
+                        </div>
+                    </div>
                     {% for grupo in grupos %}
                     <!-- carta de grupos -->
-                    <div class="card col-md-6">
+                    <div class="card col-md-9">
                         <h5 class="card-header">{{ grupo.nombre }}</h5>
                         <div class="card-body">
                             <div class="table-wrap table-responsive my-1"> <!-- "Envoltura" de la tabla -->
-                                <table class="table table-coeval-curso table-striped table-hover mb-0 "> <!-- Tabla -->
+                                <table class="table table-coeval-curso table-striped table-hover mb-0" style="table-layout: fixed; white-space: nowrap;"> <!-- Tabla -->
                                     <!-- Encabezados de tabla (Table Headers) -->
                                     <thead class="thead-light">
                                         <tr> <!-- Fila (Table Row) -->
-                                            <th>Alumnos</th>
+                                            <th style="width: 30%;">Alumnos</th>
                                             {% for titulo in grupo.titulos %}
                                             <th>{{ titulo }}</th>
                                             {% endfor %}
@@ -166,7 +171,7 @@
                                             </td>
                                             <!-- Notas -->
                                             {% for nota in alumno.notas %}
-                                            <td>{{ nota }}</td>
+                                                <td> {{ nota }}</td>
                                             {% endfor %}
                                         </tr>
                                         {% endfor %}
