@@ -120,7 +120,7 @@ def fichaCursoDocente(request, idCurso):
     userID = request.user.id
     userNombre = request.user.first_name + " " + request.user.last_name
     curso = Curso.objects.get(id=idCurso)
-    coevs = Coevaluacion.objects.filter(curso=idCurso)
+    coevs = Coevaluacion.objects.filter(curso=idCurso).order_by('-fecha_inicio')
     grupos = Grupo.objects.filter(curso=idCurso)
     estudiantes = User.objects.filter(usuariocurso__cursos=idCurso, usuariocurso__cargo='estudiante')
     dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + ", " + str(curso.Ano) + "-" + str(
@@ -141,7 +141,6 @@ def fichaCursoDocente(request, idCurso):
             listaTitulos = []
             for nota in NotaEstudiante.objects.filter(coevaluacion__curso=idCurso, estudiante=alumno.id).order_by(
                     'fecha_publicacion'):
-                nota.coevaluacion.nombre
                 if nota != "":
                     listaNotas.append(nota.nota)
                     listaTitulos.append(nota.coevaluacion.nombre)
