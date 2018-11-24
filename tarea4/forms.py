@@ -1,6 +1,11 @@
 from django import forms
 from tarea4.models import *
 
+class form(forms.Form):
+    Nombre = forms.CharField(max_length=20)
+
+
+
 
 class ResponderEval(forms.Form):
     CHOICES = [('1', "1"), ("2", "2"), ("3", "3"), ("4", "4"), ("5", "5"), ("6", "6"), ("7", "7")]

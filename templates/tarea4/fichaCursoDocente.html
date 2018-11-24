@@ -53,7 +53,7 @@
                 <div class="col-md-10 offset-1 ">
                     <div class="row justify-content-between">
             		    <h4 class="d-inline-block mt-1">Tus coevaluaciones del curso</h4>
-                        <button class="btn btn-sm btn-primary col-md-2 mr-4" onclick="showNewCoevaluacion({{ idCurso }})">Agregar coevaluación</button>
+                        <button class="btn btn-sm btn-primary col-md-3 mr-5" onclick="showNewCoevaluacion({{ idCurso }})">Agregar coevaluación</button>
                     </div>
                     <div class="table-wrap table-responsive my-1" id="tablaCoevs"> <!-- "Envoltura" de la tabla -->
                         <table class="table table-coeval-curso table-striped table-hover mb-0"> <!-- Tabla -->
@@ -110,10 +110,31 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <!-- div para buscador de alumnos -->
+
+
+             <!-- Gestión del curso -->
+            <h4 class="d-inline-block mt-1 mb-0">Gestión del Curso</h4>
+            <div class="d-inline-block ml-2">
+                <a href="#" class="small" title="Cargar información">
+                    <img class="clickable-icon export-icon mb-1"
+                         width="20" height="20">
+                    Cargar archivo...
+                </a>
+            </div>
+            <hr/>
+            <div class="row d-flex justify-content-center mb-5">
+                <form class="mr-5">
+                    <input class="form-control" type="search" placeholder="Buscar alumno..." aria-label="Buscar alumno">
+                </form>
+                <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-right ml-5">Agregar alumno</button>
             </div>
             <hr>
+            <div class="row">
+                <div class="col-md-4">
+                    <button type="button" id="add-coev-btn" class="btn btn-primary-custom float-left mb-3">Agregar grupo
+                    </button>
+                </div>
+            </div>
             <div class="row"> <!-- div para tarjetas de grupo -->
                 <div class="col-md-10 offset-1">
             		<h4 class="d-inline-block mt-1">Grupos del curso</h4>
