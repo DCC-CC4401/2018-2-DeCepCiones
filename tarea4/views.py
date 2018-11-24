@@ -138,12 +138,16 @@ def fichaCursoDocente(request, idCurso):
         listaAlumnos = []
         for alumno in grupo.estudiante.all():
             listaNotas = []
+            listaTitulos = []
             for nota in NotaEstudiante.objects.filter(coevaluacion__curso=idCurso, estudiante=alumno.id).order_by(
                     'fecha_publicacion'):
-                listaNotas.append(nota.nota)
+                nota.coevaluacion.nombre
+                if nota != "":
+                    listaNotas.append(nota.nota)
+                    listaTitulos.append(nota.coevaluacion.nombre)
             listaAlumnos.append({'nombre': alumno.first_name + " " + alumno.last_name, 'notas': listaNotas})
-        for i in range(len(coevs)):
-            listaTitulos.append("nota " + str(i + 1))
+        #for i in range(len(coevs)):
+            #listaTitulos.append("nota " + str(i + 1))
         listaGrupos.append({'nombre': grupo.Nombre, 'titulos': listaTitulos, 'alumnos': listaAlumnos})
 
     for coev in coevs:
