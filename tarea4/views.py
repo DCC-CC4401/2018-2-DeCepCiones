@@ -18,7 +18,7 @@ def landingPageEstudiante(request):
     cont = 0;
     for curso in cursos.order_by('-Ano', '-Semestre'):
         listaCurso.append({"cargo": curso.usuariocurso_set.get(user=userID).cargo.lower(), "nombre": curso.Nombre,
-                           "codigo": curso.Codigo + str(curso.Seccion),
+                           "codigo": curso.Codigo + "-" + str(curso.Seccion),
                            "semestre": str(curso.Ano) + "-" + str(curso.Semestre),
                            "id": curso.id})
 
@@ -86,8 +86,8 @@ def fichaCursoEstudiante(request, idCurso):
     userID = request.user.id
     userNombre = request.user.first_name + " " + request.user.last_name
     curso = Curso.objects.get(id=idCurso)
-    coevs = Coevaluacion.objects.filter(curso=idCurso, curso__usuariocurso__user=userID)
-    dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + " " + str(curso.Ano) + ", " + str(
+    coevs = Coevaluacion.objects.filter(curso=idCurso, curso__usuariocurso__user=userID).order_by('-fecha_inicio')
+    dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + ", " + str(curso.Ano) + "-" + str(
         curso.Semestre)
     listaCoev = []
 
@@ -123,7 +123,7 @@ def fichaCursoDocente(request, idCurso):
     coevs = Coevaluacion.objects.filter(curso=idCurso)
     grupos = Grupo.objects.filter(curso=idCurso)
     estudiantes = User.objects.filter(usuariocurso__cursos=idCurso, usuariocurso__cargo='estudiante')
-    dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + " " + str(curso.Ano) + ", " + str(
+    dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + ", " + str(curso.Ano) + "-" + str(
         curso.Semestre)
     listaGrupos = []
     listaCoev = []
