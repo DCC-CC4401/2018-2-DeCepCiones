@@ -86,7 +86,9 @@
                                     <td>{{ coev.estadoPrint }}</td>
                                     <!-- Ícono de acción (responder) -->
                                     <td class="td-icon">
-                                        {% if coev.estado == 'cerrada' %}
+                                        {% if coev.estado == 'abierta' %}
+                                        <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Modificar coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/edit-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>-->
+                                        {% elif coev.estado == 'cerrada' %}
                                         <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Publicar coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/publish-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
                                         {% elif coev.estado == 'publicada' %}
                                         <a href="{% url 'fichaCoevaluacion' coev.id %}" title="Exportar coevaluación"><img class="clickable-icon answer-icon wiggle" src="{%  static 'tarea4/icon/export-icon.png' %}"alt="Responder coevaluación" width="28" height="28"></a>
