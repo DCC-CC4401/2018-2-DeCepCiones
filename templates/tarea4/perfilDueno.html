@@ -75,7 +75,9 @@
                             <!-- Cuerpo de tabla (Table Data) -->
                             <tbody>
                                 {% for curso in listaCurso %}
-                                <tr id="row-btn" onclick='setNotas("{{ curso.codigo}}", {{curso.notas }});showNotas()'>
+                                <tr id="row-btn" {% if curso.cargo == 'alumno' %}
+                                    onclick='setNotas("{{ curso.codigo}}", {{curso.notas }});showNotas()'
+                                    {% endif %}>
                                     <td class="td-curso-full">
                                         <div class="cargos cargos-{{ curso.cargo }} tooltip-custom">
                                             <span class="tooltiptext"></span>
