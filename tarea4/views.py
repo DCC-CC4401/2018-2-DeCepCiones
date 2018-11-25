@@ -71,7 +71,7 @@ def perfilDueno(request):
         for nota in notas.filter(coevaluacion__curso=curso.id):
             listaNotas.append({'nombre': nota.coevaluacion.nombre, 'publicada': str(nota.fecha_publicacion), 'nota': nota.nota})
         cursosEstudiante.append(
-            {'cargo': UsuarioCurso.objects.get(cursos=curso.id, user=userID).cargo.lower(), 'nombre': curso.Nombre, 'codigo': curso.Codigo + "-" + str(curso.Seccion),
+            {'cargo': UsuarioCurso.objects.get(curso=curso.id, user=userID).cargo.lower(), 'nombre': curso.Nombre, 'codigo': curso.Codigo + "-" + str(curso.Seccion),
              'semestre': str(curso.Ano) + "-" + str(curso.Semestre), 'notas': listaNotas, 'id': curso.id    })
 
     dueno = {'nombre': estudiante.first_name, 'nombreCompleto': estudiante.first_name + " " + estudiante.last_name,
@@ -122,7 +122,7 @@ def fichaCursoDocente(request, idCurso):
     curso = Curso.objects.get(id=idCurso)
     coevs = Coevaluacion.objects.filter(curso=idCurso).order_by('-fecha_inicio')
     grupos = Grupo.objects.filter(curso=idCurso)
-    estudiantes = User.objects.filter(usuariocurso__cursos=idCurso, usuariocurso__cargo='estudiante')
+    estudiantes = User.objects.filter(usuariocurso__curso=idCurso, usuariocurso__cargo='estudiante')
     dataCurso = curso.Codigo + "-" + str(curso.Seccion) + " " + curso.Nombre + ", " + str(curso.Ano) + "-" + str(
         curso.Semestre)
     listaGrupos = []
@@ -254,7 +254,7 @@ def repartidor(request):
 
 def fichaCurso(request, idCurso):
     userID = request.user.id
-    cargos = UsuarioCurso.objects.filter(user=userID, cursos=idCurso)
+    cargos = UsuarioCurso.objects.filter(user=userID, curso=idCurso)
 
     if cargos.exists():
         alumno = True

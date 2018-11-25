@@ -7,7 +7,7 @@ class Curso(models.Model):
     class Meta:
         unique_together = (('Codigo', 'Seccion', 'Ano', 'Semestre'),)
 
-    Nombre = models.CharField(max_length=10)
+    Nombre = models.CharField(max_length=30)
     Codigo = models.CharField(max_length=10)
     Seccion = models.IntegerField()
     Ano = models.IntegerField()
@@ -21,11 +21,14 @@ no se si funciona asi. revisar o preguntar.
 
 
 class UsuarioCurso(models.Model):
+    class Meta:
+        unique_together = (('user', 'curso'),)
+
     listaCargos = (
         ('ALUMNO', 'alumno'), ('AUXILIAR', 'auxiliar'), ('AYUDANTE', 'ayudante'), ('PROFESOR', 'profesor'))
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     cargo = models.CharField(max_length=20, choices=listaCargos, default='alumno')
-    cursos = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
 
 
 class Grupo(models.Model):
