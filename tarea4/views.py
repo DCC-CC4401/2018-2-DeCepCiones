@@ -35,7 +35,9 @@ def landingPageEstudiante(request):
                     contestada = False;
                     break
         estado = ""
-        if contestada:
+        if contestada and coev.estado.lower() == "publicada":
+            estado = "publicada"
+        elif contestada:
             estado = "contestada"
         elif coev.estado.lower() == "abierta":
             estado = "pendiente"
