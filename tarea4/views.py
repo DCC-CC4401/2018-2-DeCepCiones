@@ -68,7 +68,7 @@ def perfilDueno(request):
 
     for curso in listaCurso.order_by('-Ano', '-Semestre'):
         listaNotas = []
-        for nota in notas.filter(coevaluacion__curso=curso.id):
+        for nota in notas.filter(coevaluacion__curso=curso.id).order_by('fecha_publicacion'):
             listaNotas.append({'nombre': nota.coevaluacion.nombre, 'publicada': str(nota.fecha_publicacion), 'nota': nota.nota})
         cursosEstudiante.append(
             {'cargo': UsuarioCurso.objects.get(curso=curso.id, user=userID).cargo.lower(), 'nombre': curso.Nombre, 'codigo': curso.Codigo + "-" + str(curso.Seccion),
@@ -102,7 +102,9 @@ def fichaCursoEstudiante(request, idCurso):
                     contestada = False;
                     break
         estado = ""
-        if contestada:
+        if contestada and coev.estado.lower() == "publicada":
+            estado = "publicada"
+        elif contestada:
             estado = "contestada"
         elif coev.estado.lower() == "abierta":
             estado = "pendiente"
@@ -187,7 +189,7 @@ def fichaCoevaluacionEstudiante(request, idCoev):
         estado = coev.estado.lower()
 
     infoCoev = {'nombre': coev.nombre,
-                'datosCurso': coevCurso.Codigo + " " + coevCurso.Nombre + " " + str(coevCurso.Seccion) +
+                'datosCurso': coevCurso.Codigo + "-" + str(coevCurso.Seccion) + " " + coevCurso.Nombre +
                               ", " + str(coevCurso.Ano) + "-" + str(coevCurso.Semestre),
                 'fechaInicio': coev.fecha_inicio, 'fechaTermino': coev.fecha_termino,
                 'estado': estado, 'estadoPrint': estado.capitalize()}
